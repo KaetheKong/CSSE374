@@ -4,5 +4,5 @@ public interface IField {
 	public String getName();
 	public String getAccess();
 	public String getFieldtype();
-	public String getDefaultValue();
+	public Object getDefaultValue();
 }

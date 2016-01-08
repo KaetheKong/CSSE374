@@ -1,16 +1,24 @@
 package classes;
 
+import java.util.List;
+
 import interfaces.IMethod;
 
 public class MethodClass implements IMethod {
 	private String name;
 	private String access;
 	private String returnType;
-	private String exceptions;
+	private String[] exceptions;
 	private String code;
-	private String[] parameters;
+	private List<String> parameters;
 
-	public MethodClass() {
+	public MethodClass(String name, String access, String returnType, String[] exceptions, String code, List<String> paramterTypes) {
+		this.name = name;
+		this.access = access;
+		this.returnType = returnType;
+		this.exceptions = exceptions;
+		this.code = code;
+		this.parameters = paramterTypes;
 	}
 
 	@Override
@@ -41,11 +49,11 @@ public class MethodClass implements IMethod {
 	}
 
 	@Override
-	public String getExceptions() {
+	public String[] getExceptions() {
 		return exceptions;
 	}
 
-	public void setExceptions(String exceptions) {
+	public void setExceptions(String[] exceptions) {
 		this.exceptions = exceptions;
 	}
 
@@ -59,11 +67,11 @@ public class MethodClass implements IMethod {
 	}
 
 	@Override
-	public String[] getParameters() {
+	public List<String> getParameters() {
 		return parameters;
 	}
 
-	public void setParameters(String[] parameters) {
+	public void setParameters(List<String> parameters) {
 		this.parameters = parameters;
 	}
 

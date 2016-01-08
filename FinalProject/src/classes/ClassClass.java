@@ -1,5 +1,6 @@
 package classes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import interfaces.IClass;
@@ -11,11 +12,33 @@ public class ClassClass implements IClass {
 	private String[] interfacesname;
 	private String access;
 	private String classname;
+	private boolean isInterface;
+	private boolean isAbstract;
 
-	public ClassClass() {
-
+	public ClassClass(ArrayList<MethodClass> methods, ArrayList<FieldClass> fields, String superclassname,
+			String[] interfacesname, String access, String classname, boolean isInterface, boolean isAbstract) {
+		this.methods = methods;
+		this.fields = fields;
+		this.superclassname = superclassname;
+		this.interfacesname = interfacesname;
+		this.access = access;
+		this.classname = classname;
+		this.isInterface = isInterface;
+		this.isAbstract = isAbstract;
 	}
-
+	
+	public void modifyClassname() {
+		String name = "";
+		for (int i = classname.length()-1; i > -1; i--) {
+			if (classname.charAt(i) == '/') {
+				break;
+			}
+			name = classname.charAt(i) + name;
+		}
+		
+		this.classname = name;
+	}
+	
 	@Override
 	public String getClassname() {
 		return classname;
@@ -68,5 +91,45 @@ public class ClassClass implements IClass {
 
 	public void setAccess(String access) {
 		this.access = access;
+	}
+
+	public String toUMLString() {
+		this.modifyClassname();
+		String start = "    " + this.classname + "[" + "\n" + "\t label" + " = ";
+		String retStr = "\"{";
+		String interfaceAbsStr = "";
+		if (this.isInterface) {
+			interfaceAbsStr = "interface\\n";
+		}
+		if (this.isAbstract) {
+			interfaceAbsStr = "abstract\\n";
+		}
+		retStr = retStr + interfaceAbsStr + this.classname + "|";
+		for (FieldClass field : this.fields) {
+			String acs = accessModifier(field.getAccess());
+			retStr = retStr + acs + " " + field.getName() + " : " + field.getFieldtype() + "\\l";
+		}
+		retStr = retStr + "|";
+
+		for (MethodClass method : this.methods) {
+			if (!method.getName().contains("init")) {
+				String acs = accessModifier(method.getAccess());
+				retStr = retStr + acs + " " + method.getName() + "()" + " : " + method.getReturnType() + "\\l";
+			}
+		}
+		retStr = retStr + "}\"" + "\n" + "    ]";
+		return start + retStr;
+	}
+
+	public String accessModifier(String access) {
+		if (access.equals("private")) {
+			return "-";
+		} else if (access.equals("protected")) {
+			return "#";
+		} else if (access.equals("public")) {
+			return "+";
+		} else {
+			return " ";
+		}
 	}
 }

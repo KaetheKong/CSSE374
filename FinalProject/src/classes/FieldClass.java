@@ -2,16 +2,20 @@ package classes;
 
 import interfaces.IField;
 
-public class FieldClass implements IField{
+public class FieldClass implements IField {
 	private String name;
 	private String access;
 	private String fieldtype;
-	private String defaultValue;
+	private Object defaultValue;
 
-	public FieldClass() {
-
+	public FieldClass(String name, String access, String fieldtype, Object defaultValue) {
+		this.name = name;
+		this.access = access;
+		this.fieldtype = fieldtype;
+		this.defaultValue = defaultValue;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -20,6 +24,7 @@ public class FieldClass implements IField{
 		this.name = name;
 	}
 
+	@Override
 	public String getAccess() {
 		return access;
 	}
@@ -28,6 +33,7 @@ public class FieldClass implements IField{
 		this.access = access;
 	}
 
+	@Override
 	public String getFieldtype() {
 		return fieldtype;
 	}
@@ -36,7 +42,8 @@ public class FieldClass implements IField{
 		this.fieldtype = fieldtype;
 	}
 
-	public String getDefaultValue() {
+	@Override
+	public Object getDefaultValue() {
 		return defaultValue;
 	}
 

@@ -6,7 +6,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
+/**
+ * from https://dzone.com/articles/get-all-classes-within-package
+ * 
+ * @author weny & kongw
+ *
+ */
 public class ClassFinder {
     @SuppressWarnings("unchecked")
 	public static ArrayList<Class> getClasses(String packageName)

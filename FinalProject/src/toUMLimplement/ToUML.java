@@ -2,7 +2,6 @@ package toUMLimplement;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ public class ToUML {
 		Map<String, ClassClass> classes = new HashMap<String, ClassClass>();
 
 		String UMLText = "digraph G {\n";
-		String ClassText = "";
+		String Classtext = "";
 
 		for (String classname : args) {
 			CodeASM ASMParser = new CodeASM(classname);
@@ -61,11 +60,30 @@ public class ToUML {
 
 		for (String cc : classes.keySet()) {
 			String t = classes.get(cc).toUMLString();
-			System.out.println(Arrays.toString(classes.get(cc).getInterfacesname()));
-			ClassText = ClassText + t + "\n";
+			Classtext = Classtext + t +"\n";
 		}
 		
-		UMLText = UMLText + FIRST_SEVERAL_LINES + ClassText + "}\n";
+		String interfaceEdge = "edge [\n stule = \"dashed\"\n arrowhead = \"empty\"\n]\n";
+		
+		for(ClassClass cc: classes.values()){
+			for(String name : cc.getInterfacesname()){
+				if(!name.startsWith("java")){
+					String[] realname = name.split("/");
+					interfaceEdge = interfaceEdge + cc.getClassname() + "->" + realname[realname.length-1] + "\n";
+				}
+			}
+		}
+		
+		String superEdge = "edge [\n stule = \"solid\"\n arrowhead = \"empty\"\n]\n";
+		
+		for(ClassClass cc: classes.values()){
+			if(!cc.getSuperclassname().startsWith("java")){
+				String[] realname = cc.getSuperclassname().split("/");
+				superEdge = superEdge + cc.getClassname() + "->" + realname[realname.length-1] + "\n";
+			}
+		}
+		
+		UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + interfaceEdge + superEdge + "} \n";
 		System.out.println(UMLText);
 	}
 }

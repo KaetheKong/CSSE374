@@ -24,13 +24,19 @@ public class ToUML {
 			"\t fontsize = 8\n" + 
 			"    ]\n";
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		Map<String, ClassClass> classes = new HashMap<String, ClassClass>();
 
 		String UMLText = "digraph G {\n";
 		String Classtext = "";
-
-		for (String classname : args) {
+		ArrayList<String> Classnames = new ArrayList<String>();
+		for(String arg: args){
+			for(Class c: ClassFinder.getClasses(arg)){
+				Classnames.add(c.getName());
+			}
+		}
+		
+		for (String classname : Classnames) {
 			CodeASM ASMParser = new CodeASM(classname);
 			ASMParser.run();
 			Map<String, FieldClass> fields = ASMParser.getFields();
@@ -63,7 +69,7 @@ public class ToUML {
 			Classtext = Classtext + t +"\n";
 		}
 		
-		String interfaceEdge = "edge [\n stule = \"dashed\"\n arrowhead = \"empty\"\n]\n";
+		String interfaceEdge = "edge [\n style = \"dashed\"\n arrowhead = \"empty\"\n]\n";
 		
 		for(ClassClass cc: classes.values()){
 			for(String name : cc.getInterfacesname()){
@@ -74,7 +80,7 @@ public class ToUML {
 			}
 		}
 		
-		String superEdge = "edge [\n stule = \"solid\"\n arrowhead = \"empty\"\n]\n";
+		String superEdge = "edge [\n style = \"solid\"\n arrowhead = \"empty\"\n]\n";
 		
 		for(ClassClass cc: classes.values()){
 			if(!cc.getSuperclassname().startsWith("java")){

@@ -28,8 +28,8 @@ public class ClassFieldVisitor extends ClassVisitor {
 		FieldVisitor toDecorats = super.visitField(access, name, desc, signature, value);
 		String type = Type.getType(desc).getClassName();
 		String accessStr = checkAccessStr(access);
-		FieldClass newField = new FieldClass(name, accessStr, type, value);
-
+		FieldClass newField = new FieldClass(name, accessStr, type, value, signature);
+		
 		this.fieldInfoCollection.put(name, newField);
 
 		return toDecorats;

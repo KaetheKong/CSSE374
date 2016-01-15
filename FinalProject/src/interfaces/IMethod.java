@@ -9,4 +9,6 @@ public interface IMethod {
 	public String[] getExceptions();
 	public String getCode();
 	public List<String> getParameters();
+	public String getSignature();
+	public List<String> parseSignature();
 }

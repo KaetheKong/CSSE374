@@ -1,5 +1,6 @@
 package classes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import interfaces.IMethod;
@@ -11,16 +12,32 @@ public class MethodClass implements IMethod {
 	private String[] exceptions;
 	private String code;
 	private List<String> parameters;
+	private String signature;
 
-	public MethodClass(String name, String access, String returnType, String[] exceptions, String code, List<String> paramterTypes) {
+	public MethodClass(String name, String access, String returnType, String[] exceptions, String code, List<String> paramterTypes, String signature) {
 		this.name = name;
 		this.access = access;
 		this.returnType = returnType;
 		this.exceptions = exceptions;
 		this.code = code;
 		this.parameters = paramterTypes;
+		this.signature = signature;
 	}
-
+	
+	public List<String> parseSignature() {
+		List<String> signatures = new ArrayList<String>();
+		if (signature != null) {
+			String[] signatureSplits = signature.split(";");
+			for (String sig : signatureSplits) {
+				String[] ss = sig.split("/");
+				for (String s : ss) {
+					signatures.add(s);
+				}
+			}
+		}
+		return signatures;
+	}
+	
 	@Override
 	public String getName() {
 		return name;
@@ -73,6 +90,11 @@ public class MethodClass implements IMethod {
 
 	public void setParameters(List<String> parameters) {
 		this.parameters = parameters;
+	}
+
+	@Override
+	public String getSignature() {
+		return this.signature;
 	}
 
 }

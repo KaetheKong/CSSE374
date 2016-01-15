@@ -1,6 +1,5 @@
 package classes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import interfaces.IClass;
@@ -15,7 +14,16 @@ public class ClassClass implements IClass {
 	private boolean isInterface;
 	private boolean isAbstract;
 
-	public ClassClass(ArrayList<MethodClass> methods, ArrayList<FieldClass> fields, String superclassname,
+
+	public boolean isInterface() {
+		return isInterface;
+	}
+
+	public boolean isAbstract() {
+		return isAbstract;
+	}
+
+	public ClassClass(List<MethodClass> methods, List<FieldClass> fields, String superclassname,
 			String[] interfacesname, String access, String classname, boolean isInterface, boolean isAbstract) {
 		this.methods = methods;
 		this.fields = fields;

@@ -5,16 +5,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import Data.ClassnameData;
 import classes.AbstractClass;
+import classes.AssociationClass;
 import classes.ClassClass;
 import classes.FieldClass;
 import classes.InterfaceClass;
 import classes.MethodClass;
+import classes.UsesClass;
 import implementation.CodeASM;
+import interfaces.IConnection;
 
 public class ToUML {
-	public final static String FIRST_SEVERAL_LINES = "    fontname = \"Bitstream Vera Sans\"\n" + "    fontsize = 8\n"
-			+ "    node [\n" + "\t fontname = \"Bitstream Vera Sans\"\n" + "\t fontsize = 8\n"
+	public final static String FIRST_SEVERAL_LINES = "    fontname = \"Bitstream Vera Sans\"\n" + "    rankdir = BT\n"
+			+ "    fontsize = 8\n" + "    node [\n" + "\t fontname = \"Bitstream Vera Sans\"\n" + "\t fontsize = 8\n"
 			+ "\t shape = \"record\"\n" + "    ]\n" + "    edge [\n" + "\t fontname = \"Bitstream Vera Sans\"\n"
 			+ "\t fontsize = 8\n" + "    ]\n";
 
@@ -23,25 +27,21 @@ public class ToUML {
 
 		String UMLText = "digraph G {\n";
 		String Classtext = "";
-		
+
 		ArrayList<String> Classnames = new ArrayList<String>();
-		for(String arg: args){
-			for(@SuppressWarnings("rawtypes") Class c: ClassFinder.getClasses(arg)){
+		for (String arg : args) {
+			for (@SuppressWarnings("rawtypes")
+			Class c : ClassFinder.getClasses(arg)) {
 				Classnames.add(c.getName());
 			}
 		}
-		
+
 		for (String classname : Classnames) {
 			CodeASM ASMParser = new CodeASM(classname);
 			ASMParser.run();
 			Map<String, FieldClass> fields = ASMParser.getFields();
 			Map<String, MethodClass> methods = ASMParser.getMethods();
-			String classAccess = ASMParser.getClassAccess();
 			String className = ASMParser.getClassName();
-			String superclassNames = ASMParser.getSuperclassName();
-			String[] interfaceNames = ASMParser.getClassInterfaces();
-			boolean isInterface = ASMParser.isInterface();
-			boolean isAbstract = ASMParser.isAbstract();
 
 			ArrayList<MethodClass> allmethods = new ArrayList<>();
 			ArrayList<FieldClass> allfields = new ArrayList<>();
@@ -54,19 +54,10 @@ public class ToUML {
 				allmethods.add(methods.get(m));
 			}
 
-			if (interfaceNames.length >= 1) {
-				ClassClass cc = new InterfaceClass(allmethods, allfields, superclassNames, interfaceNames, classAccess,
-						className, isInterface, isAbstract);
-				classes.put(className, cc);
-			} else if (superclassNames != null) {
-				ClassClass cc = new AbstractClass(allmethods, allfields, superclassNames, interfaceNames, classAccess,
-						className, isInterface, isAbstract);
-				classes.put(className, cc);
-			} else {
-				ClassClass newCC = new ClassClass(allmethods, allfields, superclassNames, interfaceNames, classAccess,
-						className, isInterface, isAbstract);
-				classes.put(className, newCC);
-			}
+			ClassClass newCC = new ClassClass(allmethods, allfields, ASMParser.getSuperclassName(),
+					ASMParser.getClassInterfaces(), ASMParser.getClassAccess(), ASMParser.getClassName(),
+					ASMParser.isInterface(), ASMParser.isAbstract());
+			classes.put(className, newCC);
 		}
 
 		for (String cc : classes.keySet()) {
@@ -74,34 +65,23 @@ public class ToUML {
 			Classtext = Classtext + t + "\n";
 		}
 
-		String interfaceText = "";
-		String connection = "";
-
+		ClassnameData cd = new ClassnameData(Classnames);
 		for (ClassClass cc : classes.values()) {
-			if (cc.getInterfacesname().length >= 1) {
-				connection = ((InterfaceClass) cc).interfaceConnection(cc);
 
-				if (!interfaceText.contains(((InterfaceClass) cc).getEdge())) {
-					interfaceText = interfaceText + ((InterfaceClass) cc).getEdge() + "\n";
-				}
+			IConnection interfaceclss = new InterfaceClass(cc);
+			IConnection absClass = new AbstractClass(cc);
+			IConnection usesClass = new UsesClass(cc, Classnames);
+			IConnection associationClass = new AssociationClass(cc, Classnames);
 
-				if (!interfaceText.contains(connection)) {
-					interfaceText = interfaceText + connection;
-				}
-			}
-		}
-		interfaceText = interfaceText + "\n";
-
-		String superEdge = "    edge [\n\t style = \"solid\"\n\t arrowhead = \"empty\"\n    ]\n";
-
-		for (ClassClass cc : classes.values()) {
-			if (!cc.getSuperclassname().startsWith("java")) {
-				String[] realname = cc.getSuperclassname().split("/");
-				superEdge = superEdge + "    " + cc.getClassname() + "->" + realname[realname.length - 1] + "\n";
-			}
+			cd.addConnections(interfaceclss);
+			cd.addConnections(absClass);
+			cd.addConnections(usesClass);
+			cd.addConnections(associationClass);
 		}
 
-		UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + interfaceText + superEdge + "} \n";
+		ComputeUMLConnection cuc = new ComputeUMLConnection(cd);
+		cuc.findConnection();
+		UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + cuc.getConnection() + "} \n";
 		System.out.println(UMLText);
 	}
 }

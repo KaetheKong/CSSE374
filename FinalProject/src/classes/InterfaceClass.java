@@ -1,17 +1,18 @@
 package classes;
 
-import java.util.ArrayList;
+import interfaces.IConnection;
 
-import interfaces.IInterface;
-
-public class InterfaceClass extends ClassClass implements IInterface{
+public class InterfaceClass extends ClassClass implements IConnection{
 	
 	private String edge;
-
-	public InterfaceClass(ArrayList<MethodClass> methods, ArrayList<FieldClass> fields, String superclassname,
-			String[] interfacesname, String access, String classname, boolean isInterface, boolean isAbstract) {
-		super(methods, fields, superclassname, interfacesname, access, classname, isInterface, isAbstract);
+	private ClassClass cc;
+	private String type;
+	
+	public InterfaceClass(ClassClass cc) {
+		super(cc.getMethods(), cc.getFields(), cc.getSuperclassname(), cc.getInterfacesname(), cc.getAccess(), cc.getClassname(), cc.isInterface(), cc.isAbstract());
+		this.cc = cc;
 		this.edge = "    edge [\n\t style = \"dashed\"\n\t arrowhead = \"empty\"\n    ]\n";
+		this.type = "interface";
 	}
 
 	@Override
@@ -19,15 +20,29 @@ public class InterfaceClass extends ClassClass implements IInterface{
 		return this.edge;
 	}
 	
-	public String interfaceConnection(ClassClass cc) {
+	public String getConnection() {
 		String connect = "";
-		for(String name : cc.getInterfacesname()){
+		if (this.cc.getInterfacesname().length < 1) return "";
+		for(String name : this.cc.getInterfacesname()){
 			if(!name.startsWith("java")){
 				String[] realname = name.split("/");
-				connect = connect + "    " + cc.getClassname() + "->" + realname[realname.length-1] + "\n";
+				connect = connect + "    " + this.cc.getClassname() + "->" + realname[realname.length-1] + "\n";
 			}
 		}
 		return connect;
+	}
+
+	public ClassClass getCc() {
+		return cc;
+	}
+
+	public void setCc(ClassClass cc) {
+		this.cc = cc;
+	}
+
+	@Override
+	public String getType() {
+		return this.type;
 	}
 
 }

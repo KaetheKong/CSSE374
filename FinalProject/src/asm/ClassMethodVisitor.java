@@ -38,7 +38,7 @@ public class ClassMethodVisitor extends ClassVisitor {
 			sTypes.add(t.getClassName());
 		}
 
-		MethodClass newMethod = new MethodClass(name, accessString, returnType, exception, null, sTypes);
+		MethodClass newMethod = new MethodClass(name, accessString, returnType, exception, null, sTypes, signature);
 		this.methodsInfoCollection.put(name, newMethod);
 
 		return toDecorates;

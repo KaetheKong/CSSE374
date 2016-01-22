@@ -1,6 +1,7 @@
 package implementation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.objectweb.asm.ClassReader;
@@ -16,6 +17,9 @@ import classes.MethodClass;
 public class CodeASM {
 	private Map<String, FieldClass> fields;
 	private Map<String, MethodClass> methods;
+	private Map<String, ArrayList<String>> mtotype;
+	private Map<String, ArrayList<String>> methodcalls;
+	private Map<String, ArrayList<String>> owner;
 	private String classAccess;
 	private String className;
 	private String superclassName;
@@ -37,13 +41,24 @@ public class CodeASM {
 		reader.accept(methodVisitor, ClassReader.EXPAND_FRAMES);
 
 		fields = ((ClassFieldVisitor) fieldVisitor).getFieldInfoCollection();
+		mtotype = ((ClassMethodVisitor) methodVisitor).getMethodsToType();
 		methods = ((ClassMethodVisitor) methodVisitor).getMethodsInfoCollection();
+		methodcalls = ((ClassMethodVisitor) methodVisitor).getMethodCall();
+		owner = ((ClassMethodVisitor) methodVisitor).getOwner();
 		classAccess = ((ClassDecorationVisitor)visitor).getAccess();
 		className = ((ClassDecorationVisitor)visitor).getName();
 		superclassName = ((ClassDecorationVisitor)visitor).getSuperName();
 		classInterfaces = ((ClassDecorationVisitor)visitor).getInterfaces();
 		isInterface = ((ClassDecorationVisitor)visitor).isInterface();
 		isAbstract = ((ClassDecorationVisitor)visitor).isAbstract();
+	}
+
+	public Map<String, ArrayList<String>> getOwner() {
+		return owner;
+	}
+
+	public Map<String, ArrayList<String>> getMethodcalls() {
+		return methodcalls;
 	}
 
 	public boolean isInterface() {
@@ -76,5 +91,13 @@ public class CodeASM {
 
 	public Map<String, MethodClass> getMethods() {
 		return methods;
+	}
+	
+	public Map<String, ArrayList<String>> getMtotype() {
+		return mtotype;
+	}
+
+	public void setMtotype(Map<String, ArrayList<String>> mtotype) {
+		this.mtotype = mtotype;
 	}
 }

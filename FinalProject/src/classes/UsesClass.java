@@ -32,7 +32,6 @@ public class UsesClass extends ClassClass implements IConnection {
 	public String getConnection() {
 		String connect = "";
 		for (MethodClass method : this.methods) {
-			String returnType = method.getReturnType();
 			List<String> sigs = method.parseSignature();
 			List<String> parsedCname = new ArrayList<String>();
 			for (String c : this.classnames) {
@@ -49,16 +48,12 @@ public class UsesClass extends ClassClass implements IConnection {
 			}
 			List<String> paramTypes = method.getParameters();
 			for (String paramType : paramTypes) {
+				paramType = paramType.replace('/', '.');
 				if (!paramType.startsWith("java") && this.classnames.contains(paramType)) {
 					paramType = paramType.replace('.', '/');
 					String[] realname = paramType.split("/");
 					connect = connect + "    " + cc.getClassname() + "->" + realname[realname.length - 1] + "\n";
 				}
-			}
-			if (!returnType.startsWith("java") && this.classnames.contains(returnType)) {
-				returnType = returnType.replace('.', '/');
-				String[] realname = returnType.split("/");
-				connect = connect + "    " + cc.getClassname() + "->" + realname[realname.length - 1] + "\n";
 			}
 		}
 		return connect;

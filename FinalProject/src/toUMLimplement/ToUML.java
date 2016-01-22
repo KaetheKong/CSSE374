@@ -24,7 +24,9 @@ public class ToUML {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		Map<String, ClassClass> classes = new HashMap<String, ClassClass>();
-
+		Map<String, Map<String,ArrayList<String>>> owner = new HashMap<String, Map<String, ArrayList<String>>>();
+		Map<String, Map<String,ArrayList<String>>> methodCall = new HashMap<String, Map<String,ArrayList<String>>>();
+		
 		String UMLText = "digraph G {\n";
 		String Classtext = "";
 
@@ -41,19 +43,31 @@ public class ToUML {
 			ASMParser.run();
 			Map<String, FieldClass> fields = ASMParser.getFields();
 			Map<String, MethodClass> methods = ASMParser.getMethods();
+			Map<String, ArrayList<String>> mtoType = ASMParser.getMtotype();
 			String className = ASMParser.getClassName();
-
 			ArrayList<MethodClass> allmethods = new ArrayList<>();
 			ArrayList<FieldClass> allfields = new ArrayList<>();
+			
+			owner.put(classname, ASMParser.getOwner());
+			methodCall.put(classname, ASMParser.getMethodcalls());
+			
+			for (String name : mtoType.keySet()) {
+//				System.out.println(name);
+				MethodClass temp = methods.get(name);
+				temp.setParameters(mtoType.get(name));
+				methods.replace(name, temp);
+//				System.out.println(temp.getParameters().toString());
+			}
 
 			for (String f : fields.keySet()) {
 				allfields.add(fields.get(f));
 			}
 
 			for (String m : methods.keySet()) {
+//				System.out.println(m);
 				allmethods.add(methods.get(m));
 			}
-
+			
 			ClassClass newCC = new ClassClass(allmethods, allfields, ASMParser.getSuperclassName(),
 					ASMParser.getClassInterfaces(), ASMParser.getClassAccess(), ASMParser.getClassName(),
 					ASMParser.isInterface(), ASMParser.isAbstract());
@@ -78,10 +92,14 @@ public class ToUML {
 			cd.addConnections(usesClass);
 			cd.addConnections(associationClass);
 		}
+		
 
 		ComputeUMLConnection cuc = new ComputeUMLConnection(cd);
+		ComputeSeqDiagram csd = new ComputeSeqDiagram(owner, methodCall, cd);
 		cuc.findConnection();
+		String t = csd.getText();
 		UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + cuc.getConnection() + "} \n";
-		System.out.println(UMLText);
+		System.out.println(t);
+//		System.out.println(UMLText);
 	}
 }

@@ -50,7 +50,6 @@ public class ComputeUMLConnection {
 		for (int i = 0; i < differentStrings.length; i++) {
 			this.connection = this.connection + differentStrings[i] + "\n";
 		}
-//		System.out.println(connection);
 	}
 
 	public String getConnection() {

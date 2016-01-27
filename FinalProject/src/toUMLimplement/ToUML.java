@@ -3,6 +3,7 @@ package toUMLimplement;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import Data.ClassnameData;
@@ -24,18 +25,27 @@ public class ToUML {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		Map<String, ClassClass> classes = new HashMap<String, ClassClass>();
-		Map<String, Map<String,ArrayList<String>>> owner = new HashMap<String, Map<String, ArrayList<String>>>();
-		Map<String, Map<String,ArrayList<String>>> methodCall = new HashMap<String, Map<String,ArrayList<String>>>();
-		
+		Map<String, Map<String, ArrayList<String>>> owner = new HashMap<String, Map<String, ArrayList<String>>>();
+		Map<String, Map<String, ArrayList<String>>> methodCall = new HashMap<String, Map<String, ArrayList<String>>>();
+
 		String UMLText = "digraph G {\n";
 		String Classtext = "";
 
-		ArrayList<String> Classnames = new ArrayList<String>();
-		for (String arg : args) {
-			for (@SuppressWarnings("rawtypes")
-			Class c : ClassFinder.getClasses(arg)) {
-				Classnames.add(c.getName());
-			}
+		ParsingIdentifier pi = new ParsingIdentifier(args);
+		List<String> Classnames = pi.getClassnames();
+		String methodname = "";
+		String[] parameters = null;
+		// for (String arg : args) {
+		// for (@SuppressWarnings("rawtypes")
+		// Class c : ClassFinder.getClasses(arg)) {
+		// Classnames.add(c.getName());
+		// }
+		// }
+
+		boolean isSeq = pi.isSeq();
+		if (isSeq) {
+			methodname = pi.getMethodName();
+			parameters = pi.getParameters();
 		}
 
 		for (String classname : Classnames) {
@@ -47,16 +57,16 @@ public class ToUML {
 			String className = ASMParser.getClassName();
 			ArrayList<MethodClass> allmethods = new ArrayList<>();
 			ArrayList<FieldClass> allfields = new ArrayList<>();
-			
+
 			owner.put(classname, ASMParser.getOwner());
 			methodCall.put(classname, ASMParser.getMethodcalls());
-			
+
 			for (String name : mtoType.keySet()) {
-//				System.out.println(name);
+				// System.out.println(name);
 				MethodClass temp = methods.get(name);
 				temp.setParameters(mtoType.get(name));
 				methods.replace(name, temp);
-//				System.out.println(temp.getParameters().toString());
+				// System.out.println(temp.getParameters().toString());
 			}
 
 			for (String f : fields.keySet()) {
@@ -64,10 +74,10 @@ public class ToUML {
 			}
 
 			for (String m : methods.keySet()) {
-//				System.out.println(m);
+				// System.out.println(m);
 				allmethods.add(methods.get(m));
 			}
-			
+
 			ClassClass newCC = new ClassClass(allmethods, allfields, ASMParser.getSuperclassName(),
 					ASMParser.getClassInterfaces(), ASMParser.getClassAccess(), ASMParser.getClassName(),
 					ASMParser.isInterface(), ASMParser.isAbstract());
@@ -92,14 +102,13 @@ public class ToUML {
 			cd.addConnections(usesClass);
 			cd.addConnections(associationClass);
 		}
-		
 
 		ComputeUMLConnection cuc = new ComputeUMLConnection(cd);
-		ComputeSeqDiagram csd = new ComputeSeqDiagram(owner, methodCall, cd);
+		ComputeSeqDiagram csd = new ComputeSeqDiagram(owner, methodCall, cd, methodname);
 		cuc.findConnection();
 		String t = csd.getText();
 		UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + cuc.getConnection() + "} \n";
 		System.out.println(t);
-//		System.out.println(UMLText);
+		// System.out.println(UMLText);
 	}
 }

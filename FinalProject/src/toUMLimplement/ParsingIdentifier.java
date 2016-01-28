@@ -39,6 +39,18 @@ public class ParsingIdentifier {
 	}
 	
 	public String[] getParameters() {
-		return this.args[3].split(",");
+		String comb = "";
+		for (int i = 3; i < this.args.length; i = i + 2) {
+			if (i != this.args.length - 1)	{
+				if (this.args[i].contains("<")) {
+					comb += this.args[i].substring(0, this.args[i].indexOf('<'));
+				} else {
+					comb += this.args[i];
+				}
+				comb += " ";
+			}
+			else comb += this.args[i];
+		}
+		return comb.split(" ");
 	}
 }

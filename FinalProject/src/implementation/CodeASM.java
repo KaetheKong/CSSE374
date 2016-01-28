@@ -2,6 +2,7 @@ package implementation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.objectweb.asm.ClassReader;
@@ -27,23 +28,27 @@ public class CodeASM {
 	private String filename;
 	private boolean isInterface;
 	private boolean isAbstract;
+	private List<MethodClass> allMethodsinfo;
 
 	public CodeASM(String filename) {
 		this.filename = filename;
 	}
 
-	public void run() throws IOException {
+	public void run(boolean isSeq) throws IOException {
 		ClassReader reader = new ClassReader(this.filename);
 		ClassVisitor visitor = new ClassDecorationVisitor(Opcodes.ASM5);
 		ClassVisitor fieldVisitor = new ClassFieldVisitor(Opcodes.ASM5, visitor);
 		ClassVisitor methodVisitor = new ClassMethodVisitor(Opcodes.ASM5, fieldVisitor);
-
+		if (isSeq) {
+			methodVisitor = new ClassMethodVisitor(Opcodes.ASM5, fieldVisitor, this.filename);
+		}
 		reader.accept(methodVisitor, ClassReader.EXPAND_FRAMES);
 
 		fields = ((ClassFieldVisitor) fieldVisitor).getFieldInfoCollection();
 		mtotype = ((ClassMethodVisitor) methodVisitor).getMethodsToType();
 		methods = ((ClassMethodVisitor) methodVisitor).getMethodsInfoCollection();
 		methodcalls = ((ClassMethodVisitor) methodVisitor).getMethodCall();
+		setAllMethodsinfo(((ClassMethodVisitor) methodVisitor).getAllMethodsInfo());
 		owner = ((ClassMethodVisitor) methodVisitor).getOwner();
 		classAccess = ((ClassDecorationVisitor)visitor).getAccess();
 		className = ((ClassDecorationVisitor)visitor).getName();
@@ -99,5 +104,13 @@ public class CodeASM {
 
 	public void setMtotype(Map<String, ArrayList<String>> mtotype) {
 		this.mtotype = mtotype;
+	}
+
+	public List<MethodClass> getAllMethodsinfo() {
+		return allMethodsinfo;
+	}
+
+	public void setAllMethodsinfo(List<MethodClass> allMethodsinfo) {
+		this.allMethodsinfo = allMethodsinfo;
 	}
 }

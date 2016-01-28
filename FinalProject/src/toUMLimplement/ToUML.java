@@ -1,5 +1,7 @@
 package toUMLimplement;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,12 +37,8 @@ public class ToUML {
 		List<String> Classnames = pi.getClassnames();
 		String methodname = "";
 		String[] parameters = null;
-		// for (String arg : args) {
-		// for (@SuppressWarnings("rawtypes")
-		// Class c : ClassFinder.getClasses(arg)) {
-		// Classnames.add(c.getName());
-		// }
-		// }
+		Map<String, MethodClass> methods = new HashMap<String, MethodClass>();
+		List<MethodClass> allMethods = new ArrayList<MethodClass>();
 
 		boolean isSeq = pi.isSeq();
 		if (isSeq) {
@@ -50,9 +48,11 @@ public class ToUML {
 
 		for (String classname : Classnames) {
 			CodeASM ASMParser = new CodeASM(classname);
-			ASMParser.run();
+			ASMParser.run(isSeq);
 			Map<String, FieldClass> fields = ASMParser.getFields();
-			Map<String, MethodClass> methods = ASMParser.getMethods();
+			methods = ASMParser.getMethods();
+			allMethods = ASMParser.getAllMethodsinfo();
+
 			Map<String, ArrayList<String>> mtoType = ASMParser.getMtotype();
 			String className = ASMParser.getClassName();
 			ArrayList<MethodClass> allmethods = new ArrayList<>();
@@ -62,11 +62,9 @@ public class ToUML {
 			methodCall.put(classname, ASMParser.getMethodcalls());
 
 			for (String name : mtoType.keySet()) {
-				// System.out.println(name);
 				MethodClass temp = methods.get(name);
-				temp.setParameters(mtoType.get(name));
+				// temp.setParameters(mtoType.get(name));
 				methods.replace(name, temp);
-				// System.out.println(temp.getParameters().toString());
 			}
 
 			for (String f : fields.keySet()) {
@@ -74,8 +72,23 @@ public class ToUML {
 			}
 
 			for (String m : methods.keySet()) {
-				// System.out.println(m);
 				allmethods.add(methods.get(m));
+			}
+
+			for (MethodClass mc : allMethods) {
+				String mcname = mc.getName();
+				List<String> params = mc.getParameters();
+				if (mcname.equals(methodname) && params.size() == parameters.length) {
+					for (int i = 0; i < parameters.length; i++) {
+						for (int j = 0; j < params.size(); j++) {
+							if (parameters[i].equals(params.get(j))) {
+								params.remove(j);
+							}
+						}
+					}
+					if (params.isEmpty())
+						methods.put(mcname, mc);
+				}
 			}
 
 			ClassClass newCC = new ClassClass(allmethods, allfields, ASMParser.getSuperclassName(),
@@ -104,11 +117,27 @@ public class ToUML {
 		}
 
 		ComputeUMLConnection cuc = new ComputeUMLConnection(cd);
-		ComputeSeqDiagram csd = new ComputeSeqDiagram(owner, methodCall, cd, methodname);
+		ComputeSeqDiagram csd = new ComputeSeqDiagram(owner, methodCall, cd, methodname, methods, parameters);
 		cuc.findConnection();
 		String t = csd.getText();
 		UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + cuc.getConnection() + "} \n";
 		System.out.println(t);
+		String filename = "seq_code.txt";
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(filename));
+			writer.write(t);
+		} catch (IOException e) {
+			System.err.println(e);
+		} finally {
+			if (writer != null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					System.err.println(e);
+				}
+			}
+		}
 		// System.out.println(UMLText);
 	}
 }

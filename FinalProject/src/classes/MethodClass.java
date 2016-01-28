@@ -13,8 +13,12 @@ public class MethodClass implements IMethod {
 	private String code;
 	private List<String> parameters;
 	private String signature;
+	private MethodClass callfrom;
+	private String clssnameCalledFrom;
+	private List<MethodClass> neighbours;
 
-	public MethodClass(String name, String access, String returnType, String[] exceptions, String code, List<String> paramterTypes, String signature) {
+	public MethodClass(String name, String access, String returnType, String[] exceptions, String code,
+			List<String> paramterTypes, String signature, MethodClass callfrom, String classname) {
 		this.name = name;
 		this.access = access;
 		this.returnType = returnType;
@@ -22,8 +26,15 @@ public class MethodClass implements IMethod {
 		this.code = code;
 		this.parameters = paramterTypes;
 		this.signature = signature;
+		this.callfrom = callfrom;
+		this.neighbours = new ArrayList<MethodClass>();
+		this.clssnameCalledFrom = classname;
 	}
-	
+
+	public String getClssnameCalledFrom() {
+		return clssnameCalledFrom;
+	}
+
 	public List<String> parseSignature() {
 		List<String> signatures = new ArrayList<String>();
 		if (signature != null) {
@@ -38,6 +49,10 @@ public class MethodClass implements IMethod {
 		return signatures;
 	}
 	
+	public void addNeighbours(MethodClass x){
+		this.neighbours.add(x);
+	}
+
 	@Override
 	public String getName() {
 		return name;
@@ -95,6 +110,22 @@ public class MethodClass implements IMethod {
 	@Override
 	public String getSignature() {
 		return this.signature;
+	}
+
+	public MethodClass getCallfrom() {
+		return callfrom;
+	}
+
+	public void setCallfrom(MethodClass callfrom) {
+		this.callfrom = callfrom;
+	}
+
+	public List<MethodClass> getNeighbours() {
+		return neighbours;
+	}
+
+	public void setNeighbours(List<MethodClass> neighbours) {
+		this.neighbours = neighbours;
 	}
 
 }

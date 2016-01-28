@@ -1,9 +1,14 @@
 package visitors;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
+
+import asm.ClassMethodVisitor;
+import classes.MethodClass;
 
 public class ClazzMethodVisitor extends MethodVisitor {
 
@@ -11,25 +16,41 @@ public class ClazzMethodVisitor extends MethodVisitor {
 	private String name;
 	private Map<String, ArrayList<String>> methodCallInOrder;
 	private ArrayList<String> owner;
+	private MethodClass callfrom;
+	private String access;
+	private String[] exceptions;
+	private ClassMethodVisitor cmv;
 
 	public ClazzMethodVisitor(int code, MethodVisitor visitor, String name, Map<String, ArrayList<String>> mtotype,
-			Map<String, ArrayList<String>> methodcall, ArrayList<String> owner) {
+			Map<String, ArrayList<String>> methodcall, ArrayList<String> owner, MethodClass callfrom, String access,
+			String[] exceptions, ClassMethodVisitor cmv) {
 		super(code, visitor);
 		this.methodsPairToType = mtotype;
 		this.name = name;
 		this.methodCallInOrder = methodcall;
 		this.owner = owner;
+		this.callfrom = callfrom;
+		this.access = access;
+		this.exceptions = exceptions;
+		this.cmv = cmv;
+	}
+
+	public MethodClass getCallfrom() {
+		return callfrom;
 	}
 
 	@Override
 	public void visitMethodInsn(int opcodes, String owner, String name, String desc, boolean itf) {
 		super.visitMethodInsn(opcodes, owner, name, desc, itf);
-		
-		this.owner.add(owner);
-		
+
+		if (!this.owner.contains(owner))
+			this.owner.add(owner);
+
 		if (methodCallInOrder.containsKey(owner)) {
 			ArrayList<String> temp = methodCallInOrder.get(owner);
-			temp.add(name);
+			if (!temp.contains(name)) {
+				temp.add(name);
+			}
 			methodCallInOrder.replace(owner, temp);
 		} else {
 			ArrayList<String> newMethodList = new ArrayList<String>();
@@ -37,6 +58,23 @@ public class ClazzMethodVisitor extends MethodVisitor {
 			methodCallInOrder.put(owner, newMethodList);
 		}
 
+		String retType = Type.getReturnType(desc).getClassName();
+		Type[] argType = Type.getArgumentTypes(desc);
+
+		List<String> sTypes = new ArrayList<String>();
+
+		for (Type t : argType) {
+			sTypes.add(t.getClassName());
+		}
+
+		MethodClass subclass = new MethodClass(name, this.access, retType, this.exceptions, null, sTypes, null,
+				this.callfrom, owner.replace('.', '/'));
+		this.callfrom.addNeighbours(subclass);
+		Map<String, MethodClass> temp = this.cmv.getMethodsInfoCollection();
+		if (!temp.containsKey(name)) {
+			temp.put(name, subclass);
+		}
+		this.cmv.setMethodsInfoCollection(temp);
 	}
 
 	@Override
@@ -62,6 +100,11 @@ public class ClazzMethodVisitor extends MethodVisitor {
 	@Override
 	public void visitVarInsn(int opcode, int var) {
 		super.visitVarInsn(opcode, var);
+	}
+
+	@Override
+	public void visitCode() {
+		super.visitCode();
 	}
 
 	public Map<String, ArrayList<String>> getMethodsPairToType() {

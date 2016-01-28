@@ -87,15 +87,25 @@ public class ClassMethodVisitor extends ClassVisitor {
 			ArrayList<String> t = new ArrayList<String>();
 			this.owner.put(name, t);
 		}
+		if (this.classnameCalledFrom != null) {
+			MethodClass newMethod = new MethodClass(name, accessString, returnType, exception, null, sTypes, signature,
+					this.mc, this.classnameCalledFrom.replace('.', '/'));
+			this.methodsInfoCollection.put(name, newMethod);
+			this.allMethodsInfo.add(newMethod);
+
+			MethodVisitor mv = new ClazzMethodVisitor(Opcodes.ASM5, toDecorates, name, this.mtotype, this.methodCall,
+					this.owner.get(name), newMethod, checkAccessStr(access), exception, this);
+			return mv;
+		}
 
 		MethodClass newMethod = new MethodClass(name, accessString, returnType, exception, null, sTypes, signature,
-				this.mc, this.classnameCalledFrom.replace('.', '/'));
-
+				this.mc, null);
 		this.methodsInfoCollection.put(name, newMethod);
 		this.allMethodsInfo.add(newMethod);
 
 		MethodVisitor mv = new ClazzMethodVisitor(Opcodes.ASM5, toDecorates, name, this.mtotype, this.methodCall,
 				this.owner.get(name), newMethod, checkAccessStr(access), exception, this);
+		
 		return mv;
 	}
 
@@ -137,7 +147,7 @@ public class ClassMethodVisitor extends ClassVisitor {
 		}
 		return x;
 	}
-	
+
 	public List<MethodClass> getAllMethodsInfo() {
 		return allMethodsInfo;
 	}

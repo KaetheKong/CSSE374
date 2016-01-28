@@ -41,6 +41,8 @@ public class ToUML {
 		List<MethodClass> allMethods = new ArrayList<MethodClass>();
 
 		boolean isSeq = pi.isSeq();
+		boolean includeJava = pi.isIncludeJava();
+		
 		if (isSeq) {
 			methodname = pi.getMethodName();
 			parameters = pi.getParameters();
@@ -63,7 +65,9 @@ public class ToUML {
 
 			for (String name : mtoType.keySet()) {
 				MethodClass temp = methods.get(name);
-				// temp.setParameters(mtoType.get(name));
+				if (!isSeq) {
+					temp.setParameters(mtoType.get(name));
+				}
 				methods.replace(name, temp);
 			}
 
@@ -75,19 +79,21 @@ public class ToUML {
 				allmethods.add(methods.get(m));
 			}
 
-			for (MethodClass mc : allMethods) {
-				String mcname = mc.getName();
-				List<String> params = mc.getParameters();
-				if (mcname.equals(methodname) && params.size() == parameters.length) {
-					for (int i = 0; i < parameters.length; i++) {
-						for (int j = 0; j < params.size(); j++) {
-							if (parameters[i].equals(params.get(j))) {
-								params.remove(j);
+			if (isSeq) {
+				for (MethodClass mc : allMethods) {
+					String mcname = mc.getName();
+					List<String> params = mc.getParameters();
+					if (mcname.equals(methodname) && params.size() == parameters.length) {
+						for (int i = 0; i < parameters.length; i++) {
+							for (int j = 0; j < params.size(); j++) {
+								if (parameters[i].equals(params.get(j))) {
+									params.remove(j);
+								}
 							}
 						}
+						if (params.isEmpty())
+							methods.put(mcname, mc);
 					}
-					if (params.isEmpty())
-						methods.put(mcname, mc);
 				}
 			}
 
@@ -116,28 +122,31 @@ public class ToUML {
 			cd.addConnections(associationClass);
 		}
 
-		ComputeUMLConnection cuc = new ComputeUMLConnection(cd);
-		ComputeSeqDiagram csd = new ComputeSeqDiagram(owner, methodCall, cd, methodname, methods, parameters);
-		cuc.findConnection();
-		String t = csd.getText();
-		UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + cuc.getConnection() + "} \n";
-		System.out.println(t);
-		String filename = "seq_code.txt";
-		BufferedWriter writer = null;
-		try {
-			writer = new BufferedWriter(new FileWriter(filename));
-			writer.write(t);
-		} catch (IOException e) {
-			System.err.println(e);
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					System.err.println(e);
+		if (!isSeq) {
+			ComputeUMLConnection cuc = new ComputeUMLConnection(cd);
+			cuc.findConnection();
+			UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + cuc.getConnection() + "} \n";
+			System.out.println(UMLText);
+		} else {
+			ComputeSeqDiagram csd = new ComputeSeqDiagram(owner, methodCall, cd, methodname, methods, parameters, includeJava);
+			String t = csd.getText();
+			System.out.println(t);
+			String filename = "seq_code.txt";
+			BufferedWriter writer = null;
+			try {
+				writer = new BufferedWriter(new FileWriter(filename));
+				writer.write(t);
+			} catch (IOException e) {
+				System.err.println(e);
+			} finally {
+				if (writer != null) {
+					try {
+						writer.close();
+					} catch (IOException e) {
+						System.err.println(e);
+					}
 				}
 			}
 		}
-		// System.out.println(UMLText);
 	}
 }

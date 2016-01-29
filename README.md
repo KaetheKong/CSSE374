@@ -9,7 +9,6 @@ Design:
 Works:
 	Kong initialized all the classes and interfaces. Also she modified all the classes in classes package and interfaces package and CodeASM.
 	Wen modified all the classes in asm package and toUMLimplement.
-	
 	We both devoted to the manual generation of UML diagram.
 	
 How to use our code?

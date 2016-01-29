@@ -38,14 +38,24 @@ public class SingletonDetect implements IDesignPattern {
 				String[] x = str.split("/");
 				str = x[x.length - 1];
 			}
-			
+
 			if (mc.getAccess().equals("public_static") && this.defaultreturnType.equals(str)) {
-				getinstncemds = mc;
+				boolean hasSelfinit = false;
+				for (int i = 0; i < mc.getNeighbours().size(); i++) {
+					MethodClass mtp = mc.getNeighbours().get(i);
+					String clssname = mtp.getClssnameCalledFrom().replace(".", "/");
+					String[] realname = clssname.split("/");
+					if (realname[realname.length - 1].equals(this.defaultreturnType) && mtp.getName().contains("init")) {
+						hasSelfinit = true;
+						break;
+					}
+				}
+				if (hasSelfinit) {
+					getinstncemds = mc;
+				}
 				break;
 			}
 		}
-		if (getinstncemds == null)
-			return false;
 
 		List<FieldClass> reqinstancefields = new ArrayList<FieldClass>();
 
@@ -62,7 +72,8 @@ public class SingletonDetect implements IDesignPattern {
 			}
 		}
 
-		if (reqinstancefields.size() < 1 || reqinstancefields.size() != this.defaultFields.size())
+		if ((reqinstancefields.size() < 1 || reqinstancefields.size() != this.defaultFields.size())
+				&& getinstncemds == null)
 			return false;
 
 		for (FieldClass eachfc : reqinstancefields) {

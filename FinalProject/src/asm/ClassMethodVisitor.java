@@ -105,7 +105,7 @@ public class ClassMethodVisitor extends ClassVisitor {
 
 		MethodVisitor mv = new ClazzMethodVisitor(Opcodes.ASM5, toDecorates, name, this.mtotype, this.methodCall,
 				this.owner.get(name), newMethod, checkAccessStr(access), exception, this);
-		
+
 		return mv;
 	}
 
@@ -133,9 +133,14 @@ public class ClassMethodVisitor extends ClassVisitor {
 			str = "private";
 		} else if ((access & Opcodes.ACC_PROTECTED) != 0) {
 			str = "protected";
+		} else if ((access & Opcodes.ACC_FINAL) != 0) {
+			str = "private final";
+		} else if ((access & Opcodes.NULL) != 0) {
+			str = "private";
 		} else {
-			str = "default";
+			str = "none";
 		}
+		
 		if ((access & Opcodes.ACC_STATIC) != 0) {
 			str += "_static";
 		}

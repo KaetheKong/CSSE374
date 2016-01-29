@@ -1,0 +1,22 @@
+digraph G {
+    fontname = "Bitstream Vera Sans"
+    rankdir = BT
+    fontsize = 8
+    node [
+	 fontname = "Bitstream Vera Sans"
+	 fontsize = 8
+	 shape = "record"
+    ]
+    edge [
+	 fontname = "Bitstream Vera Sans"
+	 fontsize = 8
+    ]
+    Calendar[
+	 label = "{\<\<abstract\>\>\nCalendar\n|+ MONTH : int\l+ THURSDAY : int\l+ WEEK_OF_MONTH : int\l+ DECEMBER : int\l+ NARROW_STANDALONE : int\l- HOUR_OF_DAY_MASK : int\l+ DAY_OF_WEEK_IN_MONTH : int\l+ NARROW_FORMAT : int\l- MINIMUM_USER_STAMP : int\l- WEEK_OF_YEAR_MASK : int\l+ WEDNESDAY : int\l- YEAR_MASK : int\l+ LONG_STANDALONE : int\l+ YEAR : int\l+ WEEK_OF_YEAR : int\l+ FIELD_COUNT : int\l- zone : java.util.TimeZone\l+ SATURDAY : int\l- sharedZone : boolean\l+ MINUTE : int\l- serialVersionOnStream : int\l- HOUR_MASK : int\l+ JANUARY : int\l- DAY_OF_YEAR_MASK : int\l+ DST_OFFSET : int\l+ SUNDAY : int\l+ LONG_FORMAT : int\l# isSet : boolean[]\l+ TUESDAY : int\l+ SEPTEMBER : int\l+ AM : int\l- ERA_MASK : int\l? areAllFieldsSet : boolean\l+ DATE : int\l- SECOND_MASK : int\l+ ERA : int\l- minimalDaysInFirstWeek : int\l- MINUTE_MASK : int\l- MILLISECOND_MASK : int\l+ AUGUST : int\l+ JULY : int\l+ DAY_OF_WEEK : int\l# fields : int[]\l- DST_OFFSET_MASK : int\l+ DAY_OF_YEAR : int\l+ MAY : int\l+ DAY_OF_MONTH : int\l+ HOUR : int\l+ FRIDAY : int\l+ AM_PM : int\l+ FEBRUARY : int\l- stamp : int[]\l+ ALL_STYLES : int\l- currentSerialVersion : int\l- lenient : boolean\l+ ZONE_OFFSET : int\l- serialVersionUID : long\l+ HOUR_OF_DAY : int\l+ UNDECIMBER : int\l- AM_PM_MASK : int\l- cachedLocaleData : java.util.concurrent.ConcurrentMap\l- UNSET : int\l- FIELD_NAME : java.lang.String[]\l+ APRIL : int\l+ LONG : int\l- DATE_MASK : int\l+ JUNE : int\l- STANDALONE_MASK : int\l+ SHORT_STANDALONE : int\l- COMPUTED : int\l- DAY_OF_WEEK_IN_MONTH_MASK : int\l+ OCTOBER : int\l- DAY_OF_MONTH_MASK : int\l- $assertionsDisabled : boolean\l+ NOVEMBER : int\l# isTimeSet : boolean\l+ SHORT : int\l- ALL_FIELDS : int\l+ MONDAY : int\l- MONTH_MASK : int\l- nextStamp : int\l- WEEK_OF_MONTH_MASK : int\l- DAY_OF_WEEK_MASK : int\l- firstDayOfWeek : int\l- ZONE_OFFSET_MASK : int\l+ MARCH : int\l+ SECOND : int\l+ MILLISECOND : int\l# time : long\l+ PM : int\l+ SHORT_FORMAT : int\l# areFieldsSet : boolean\l|+ getInstance() : java.util.Calendar\l- createCalendar() : java.util.Calendar\l+ getAvailableLocales() : java.util.Locale[]\l# computeTime() : void\l# computeFields() : void\l+ getTime() : java.util.Date\l+ setTime() : void\l+ getTimeInMillis() : long\l+ setTimeInMillis() : void\l+ get() : int\l# internalGet() : int\l- internalSet() : void\l+ set() : void\l+ clear() : void\l+ isSet() : boolean\l+ getDisplayName() : java.lang.String\l+ getDisplayNames() : java.util.Map\l- getDisplayNamesImpl() : java.util.Map\l? checkDisplayNameParams() : boolean\l- getFieldStrings() : java.lang.String[]\l# complete() : void\l- isExternallySet() : boolean\l- getSetStateFields() : int\l- setFieldsComputed() : void\l- setFieldsNormalized() : void\l- isPartiallyNormalized() : boolean\l- isFullyNormalized() : boolean\l- setUnnormalized() : void\l? isFieldSet() : boolean\l- selectFields() : int\l? getBaseStyle() : int\l? isStandaloneStyle() : boolean\l? isNarrowStyle() : boolean\l- aggregateStamp() : int\l+ getAvailableCalendarTypes() : java.util.Set\l+ getCalendarType() : java.lang.String\l+ equals() : boolean\l+ hashCode() : int\l+ before() : boolean\l+ after() : boolean\l+ compareTo() : int\l+ add() : void\l+ roll() : void\l+ setTimeZone() : void\l+ getTimeZone() : java.util.TimeZone\l? getZone() : java.util.TimeZone\l? setZoneShared() : void\l+ setLenient() : void\l+ isLenient() : boolean\l+ setFirstDayOfWeek() : void\l+ getFirstDayOfWeek() : int\l+ setMinimalDaysInFirstWeek() : void\l+ getMinimalDaysInFirstWeek() : int\l+ isWeekDateSupported() : boolean\l+ getWeekYear() : int\l+ setWeekDate() : void\l+ getWeeksInWeekYear() : int\l+ getMinimum() : int\l+ getMaximum() : int\l+ getGreatestMinimum() : int\l+ getLeastMaximum() : int\l+ getActualMinimum() : int\l+ getActualMaximum() : int\l+ clone() : java.lang.Object\l? getFieldName() : java.lang.String\l+ toString() : java.lang.String\l- appendValue() : void\l- setWeekCountData() : void\l- updateTime() : void\l- getMillisOf() : long\l- adjustStamp() : void\l- invalidateWeekFields() : void\l- writeObject() : void\l- readObject() : void\l+ toInstant() : java.time.Instant\l}"
+    ]
+
+
+
+
+
+} 

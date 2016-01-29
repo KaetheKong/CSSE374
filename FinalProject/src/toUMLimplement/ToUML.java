@@ -15,6 +15,7 @@ import classes.ClassClass;
 import classes.FieldClass;
 import classes.InterfaceClass;
 import classes.MethodClass;
+import classes.SingletonClass;
 import classes.UsesClass;
 import implementation.CodeASM;
 import interfaces.IConnection;
@@ -115,11 +116,13 @@ public class ToUML {
 			IConnection absClass = new AbstractClass(cc);
 			IConnection usesClass = new UsesClass(cc, Classnames);
 			IConnection associationClass = new AssociationClass(cc, Classnames);
+			IConnection singletonClass = new SingletonClass(cc);
 
 			cd.addConnections(interfaceclss);
 			cd.addConnections(absClass);
 			cd.addConnections(usesClass);
 			cd.addConnections(associationClass);
+			cd.addConnections(singletonClass);
 		}
 
 		if (!isSeq) {
@@ -127,10 +130,27 @@ public class ToUML {
 			cuc.findConnection();
 			UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + cuc.getConnection() + "} \n";
 			System.out.println(UMLText);
+			
+			String filename = "uml_code.txt";
+			BufferedWriter writer = null;
+			try {
+				writer = new BufferedWriter(new FileWriter(filename));
+				writer.write(UMLText);
+			} catch (IOException e) {
+				System.err.println(e);
+			} finally {
+				if (writer != null) {
+					try {
+						writer.close();
+					} catch (IOException e) {
+						System.err.println(e);
+					}
+				}
+			}
 		} else {
 			ComputeSeqDiagram csd = new ComputeSeqDiagram(methodname, methods, includeJava, 5);
 			String t = csd.getText();
-			// System.out.println(t);
+			
 			String filename = "seq_code.txt";
 			BufferedWriter writer = null;
 			try {

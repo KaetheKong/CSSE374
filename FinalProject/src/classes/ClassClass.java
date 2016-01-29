@@ -110,16 +110,17 @@ public class ClassClass implements IClass {
 		String start = "    " + this.classname + "[" + "\n" + "\t label" + " = ";
 		String retStr = "\"{";
 		String interfaceAbsStr = "";
+		String singletonStr = "";
 		if (this.isInterface) {
-			interfaceAbsStr = "interface\\n";
+			interfaceAbsStr = "\\<\\<interface\\>\\>\\n";
 		}
 		if (this.isAbstract) {
-			interfaceAbsStr = "abstract\\n";
+			interfaceAbsStr = "\\<\\<abstract\\>\\>\\n";
 		}
 		if (this.isSingleton) {
-			interfaceAbsStr = "singleton\\n";
+			singletonStr = "\\<\\<singleton\\>\\>\\n";
 		}
-		retStr = retStr + interfaceAbsStr + this.classname + "|";
+		retStr = retStr + interfaceAbsStr + this.classname + "\\n" + singletonStr + "|";
 		for (FieldClass field : this.fields) {
 			String acs = accessModifier(field.getAccess());
 			retStr = retStr + acs + " " + field.getName() + " : " + field.getFieldtype() + "\\l";
@@ -135,10 +136,11 @@ public class ClassClass implements IClass {
 			}
 		}
 
-		retStr = retStr + "}\"," + "\n";
+		retStr = retStr + "}\"" + "\n";
 
 		if (this.isSingleton) {
-			retStr += "\t colour=blue\n";
+			retStr += "\t style=\"solid\"\n";
+			retStr += "\t color=\"blue\"\n";
 		}
 
 		retStr = retStr + "    ]";
@@ -146,18 +148,21 @@ public class ClassClass implements IClass {
 	}
 
 	public String accessModifier(String access) {
-		if (access.equals("private") || access.equals("private_static")) {
+		if (access.contains("private")) {
 			return "-";
-		} else if (access.equals("protected") || access.equals("protected_static")) {
+		} else if (access.contains("protected")) {
 			return "#";
-		} else if (access.equals("public") || access.equals("public_static")) {
+		} else if (access.contains("public")) {
 			return "+";
+		} else if (access.contains("none")) {
+			return "?";
 		} else {
 			return " ";
 		}
 	}
 
 	public boolean isSingleton() {
+		checkSingleton();
 		return isSingleton;
 	}
 
@@ -168,6 +173,5 @@ public class ClassClass implements IClass {
 	public void checkSingleton() {
 		IDesignPattern sd = new SingletonDetect(this.classname);
 		this.isSingleton = sd.detectPattern(this.methods, this.fields);
-		System.out.println(this.isSingleton);
 	}
 }

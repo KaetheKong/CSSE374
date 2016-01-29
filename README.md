@@ -11,5 +11,17 @@ Works:
 	Wen modified all the classes in asm package and toUMLimplement.
 	We both devoted to the manual generation of UML diagram.
 	
+For Milestone #2:
+
+Design: 
+	We added two more classes: UsesClass and AssociationClass that have specific edge description.we enhance the decoration design pattern so that every additional edges can be added simply.
+	
+Works: 
+	Kong implemented the UsesClass and tests and modified interfaces package.
+	Wen implemented the AssociationClass and also modified toUMLimplementation package.
+	We modified the design to enhance the design principles.
+	Both of us worked together to generate the UML diagram.
+
+
 How to use our code?
 	The main function was implemented in ToUML in the toUMLimplement package. Pass in the package name of the packages to generate the UML and run the code. The textual code for GraphViz would print to the console. Copy the code over to GraphViz and it would generate the UML Diagram.

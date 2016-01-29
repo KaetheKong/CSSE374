@@ -45,4 +45,4 @@ Example command passing in as argument:
 	
 	seq java/util/Collections shuffle List<?> list, Random r true
 	
-	The textual code for GraphViz/SDEdit would print to the console. Copy the code over to GraphViz/SDEdit and it would generate the UML Diagram or the sequence diagram as requested.
+The textual code for GraphViz/SDEdit would print to the console. Copy the code over to GraphViz/SDEdit and it would generate the UML Diagram or the sequence diagram as requested.

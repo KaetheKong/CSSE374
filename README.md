@@ -22,6 +22,27 @@ Works:
 	We modified the design to enhance the design principles.
 	Both of us worked together to generate the UML diagram.
 
+For Milestone #3:
+
+Design:
+	We added an extra class inside of toUMLimplement that compute the sequence diagram connection for us. To find the order of the execution of methods, we added extra fields into the visitors class so that we would be able to know the owner of each inner method and parameter that are called by the method to generate diagram for. Also, we added a parsing identifier into toUMLimplement package such that it can identify if it wants to generate a sequence diagram based on the classname and method name given or if it wants to generate a UML diagram based on package name/class name.
+	
+Works:
+	Kong implemented the ComputeSeqDiagram class inside of toUMLimplement.
+	Wen changed some parts of the asm code to keep track of more information for each method.
+	We both worked on the manual generation of UML and Sequence diagram.
 
 How to use our code?
-	The main function was implemented in ToUML in the toUMLimplement package. Pass in the package name of the packages to generate the UML and run the code. The textual code for GraphViz would print to the console. Copy the code over to GraphViz and it would generate the UML Diagram.
+	The main function was implemented in ToUML in the toUMLimplement package. Pass in a command follows a format as following as the argument of the ToUML class. 
+	
+	seq <classname> <methodname> <parameters (separate by commas)> <boolean value to include java classes or not>
+	
+	uml <package name (separate by commas)> <boolean value to show if the argment passed in is a classname>
+	
+Example command passing in as argument:
+	
+	uml asm classes Data designPatterns implementation interfaces toUMLimplement false
+	
+	seq java/util/Collections shuffle List<?> list, Random r true
+	
+	The textual code for GraphViz/SDEdit would print to the console. Copy the code over to GraphViz/SDEdit and it would generate the UML Diagram or the sequence diagram as requested.

@@ -31,7 +31,7 @@ public class TestToUML {
 	public void testCodeASM() {
 		CodeASM ASMParser = new CodeASM("TestFiles.TestJavaCodeASMParsing");
 		try {
-			ASMParser.run();
+			ASMParser.run(false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -58,7 +58,7 @@ public class TestToUML {
 	public void testUsesClass() {
 		CodeASM ASMParser = new CodeASM("TestFiles.TestJavaCodeASMParsing");
 		try {
-			ASMParser.run();
+			ASMParser.run(false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -93,7 +93,7 @@ public class TestToUML {
 	public void testAssociationClass() {
 		CodeASM ASMParser = new CodeASM("classes.ClassClass");
 		try {
-			ASMParser.run();
+			ASMParser.run(false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -136,6 +136,8 @@ public class TestToUML {
 		Map<String, MethodClass> methods = new HashMap<String, MethodClass>();
 		methods = ((ClassMethodVisitor) methodVisitor).getMethodsInfoCollection();
 		ArrayList<String> methodsName = new ArrayList<String>();
+		methodsName.add("add");
+		methodsName.add("println");
 		methodsName.add("getA");
 		methodsName.add("getB");
 		methodsName.add("getC");

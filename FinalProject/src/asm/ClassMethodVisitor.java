@@ -136,6 +136,9 @@ public class ClassMethodVisitor extends ClassVisitor {
 		} else {
 			str = "default";
 		}
+		if ((access & Opcodes.ACC_STATIC) != 0) {
+			str += "_static";
+		}
 
 		return str;
 	}

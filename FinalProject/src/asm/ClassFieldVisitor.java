@@ -29,7 +29,6 @@ public class ClassFieldVisitor extends ClassVisitor {
 		String type = Type.getType(desc).getClassName();
 		String accessStr = checkAccessStr(access);
 		FieldClass newField = new FieldClass(name, accessStr, type, value, signature);
-		
 		this.fieldInfoCollection.put(name, newField);
 
 		return toDecorats;
@@ -50,7 +49,10 @@ public class ClassFieldVisitor extends ClassVisitor {
 		} else {
 			str = "default";
 		}
-
+		
+		if ((access & Opcodes.ACC_STATIC) != 0) {
+			str += "_static";
+		}
 		return str;
 	}
 }

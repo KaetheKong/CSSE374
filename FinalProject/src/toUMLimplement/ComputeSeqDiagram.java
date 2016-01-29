@@ -9,7 +9,6 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 
-import Data.ClassnameData;
 import asm.ClassDecorationVisitor;
 import asm.ClassFieldVisitor;
 import asm.ClassMethodVisitor;
@@ -17,42 +16,39 @@ import classes.MethodClass;
 
 public class ComputeSeqDiagram {
 
-	private Map<String, Map<String, ArrayList<String>>> owner;
-	private Map<String, Map<String, ArrayList<String>>> methodCall;
 	private String topText;
 	private String text;
 	private String methodname;
 	private Map<String, MethodClass> methods;
+	private List<String> classnames;
 	private boolean includeJava;
+	private int depth;
 
-	public ComputeSeqDiagram(Map<String, Map<String, ArrayList<String>>> owner,
-			Map<String, Map<String, ArrayList<String>>> methodCall, ClassnameData cd, String methodname,
-			Map<String, MethodClass> methods, String[] parameters, boolean includeJava) {
-		this.owner = owner;
-		this.methodCall = methodCall;
+	public ComputeSeqDiagram(String methodname, Map<String, MethodClass> methods, boolean includeJava, int depth) {
 		this.topText = "";
 		this.text = "";
 		this.methodname = methodname;
 		this.methods = methods;
 		this.includeJava = includeJava;
+		this.depth = depth;
+		this.classnames = new ArrayList<String>();
 	}
 
 	public String getText() throws IOException {
-		digFiveDepth(this.methodname, this.owner, this.methodCall, 0, this.methods);
+		digFiveDepth(this.methodname, 0, this.methods);
 		String ret = topText + "\n" + text;
 		return ret;
 	}
 
-	public void digFiveDepth(String method, Map<String, Map<String, ArrayList<String>>> owners,
-			Map<String, Map<String, ArrayList<String>>> mthdCall, int count, Map<String, MethodClass> methods)
-					throws IOException {
-		if (count >= 5) {
+	public void digFiveDepth(String method, int count, Map<String, MethodClass> methods) throws IOException {
+		if (count >= this.depth) {
 			return;
 		}
 
 		if (methods.containsKey(method)) {
 			MethodClass x = methods.get(method);
-			if ((!x.getClssnameCalledFrom().startsWith("java") && !x.getClssnameCalledFrom().startsWith("org")) || this.includeJava) {
+			if ((!x.getClssnameCalledFrom().startsWith("java") && !x.getClssnameCalledFrom().startsWith("org"))
+					|| this.includeJava) {
 				if (!topText.contains(x.getClssnameCalledFrom() + ":" + x.getClssnameCalledFrom())) {
 					this.topText += x.getClssnameCalledFrom() + ":" + x.getClssnameCalledFrom() + "[a]\n";
 				}
@@ -83,12 +79,16 @@ public class ComputeSeqDiagram {
 					}
 					this.text += temp;
 				}
+				if (!classnames.contains(x.getClssnameCalledFrom())) {
+					this.classnames.add(x.getClssnameCalledFrom());
+				}
 			}
 
 			for (int i = 0; i < x.getNeighbours().size(); i++) {
 				MethodClass t = x.getNeighbours().get(i);
 
-				if ((!t.getClssnameCalledFrom().startsWith("java") && !t.getClssnameCalledFrom().startsWith("org")) || this.includeJava) {
+				if ((!t.getClssnameCalledFrom().startsWith("java") && !t.getClssnameCalledFrom().startsWith("org"))
+						|| this.includeJava) {
 
 					if (!topText.contains(t.getClssnameCalledFrom() + ":" + t.getClssnameCalledFrom())) {
 						this.topText += t.getClssnameCalledFrom() + ":" + t.getClssnameCalledFrom() + "[a]\n";
@@ -121,11 +121,7 @@ public class ComputeSeqDiagram {
 						this.text += temp;
 					}
 
-					if (!t.getClssnameCalledFrom()
-							.startsWith("[L") /*
-												 * && !t.getClssnameCalledFrom().
-												 * startsWith("java")
-												 */) {
+					if (!t.getClssnameCalledFrom().startsWith("[L")) {
 						ClassReader cr = new ClassReader(t.getClssnameCalledFrom());
 						ClassVisitor visitor = new ClassDecorationVisitor(Opcodes.ASM5);
 						ClassVisitor fieldVisitor = new ClassFieldVisitor(Opcodes.ASM5, visitor);
@@ -138,12 +134,18 @@ public class ComputeSeqDiagram {
 						if (mctemp != null) {
 							mds.put(mctemp.getName(), mctemp);
 						}
-
-						digFiveDepth(t.getName(), owners, mthdCall, count + 1, mds);
+						if (!classnames.contains(t.getClssnameCalledFrom())) {
+							this.classnames.add(t.getClssnameCalledFrom());
+						}
+						digFiveDepth(t.getName(), count + 1, mds);
 					}
 				}
 			}
 		}
+	}
+
+	public List<String> getClassnames() {
+		return classnames;
 	}
 
 	public MethodClass findCorrectMethodClass(MethodClass toMatch, List<MethodClass> allmethod) {

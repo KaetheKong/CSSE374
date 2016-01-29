@@ -22,8 +22,8 @@ public class TestJavaCodeASMParsing {
 		return b;
 	}
 
-	public List<String[]> getC() {
-		String[] t = {"1", "2", "3"};
+	public List<String[]> getC(int a, int b) {
+		String[] t = {"1", "2", "3", ""+a, ""+b};
 		this.c.add(t);
 		return c;
 	}

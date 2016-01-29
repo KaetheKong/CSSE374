@@ -42,7 +42,7 @@ public class ToUML {
 
 		boolean isSeq = pi.isSeq();
 		boolean includeJava = pi.isIncludeJava();
-		
+
 		if (isSeq) {
 			methodname = pi.getMethodName();
 			parameters = pi.getParameters();
@@ -97,7 +97,7 @@ public class ToUML {
 				}
 			}
 
-			ClassClass newCC = new ClassClass(allmethods, allfields, ASMParser.getSuperclassName(),
+			ClassClass newCC = new ClassClass(allMethods, allfields, ASMParser.getSuperclassName(),
 					ASMParser.getClassInterfaces(), ASMParser.getClassAccess(), ASMParser.getClassName(),
 					ASMParser.isInterface(), ASMParser.isAbstract());
 			classes.put(className, newCC);
@@ -128,9 +128,9 @@ public class ToUML {
 			UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + cuc.getConnection() + "} \n";
 			System.out.println(UMLText);
 		} else {
-			ComputeSeqDiagram csd = new ComputeSeqDiagram(owner, methodCall, cd, methodname, methods, parameters, includeJava);
+			ComputeSeqDiagram csd = new ComputeSeqDiagram(methodname, methods, includeJava, 5);
 			String t = csd.getText();
-			System.out.println(t);
+			// System.out.println(t);
 			String filename = "seq_code.txt";
 			BufferedWriter writer = null;
 			try {

@@ -21,6 +21,8 @@ public class AdapterDetect implements IDesignPattern {
 	private String defaultereturnType;
 	private List<String> defaultFields;
 	private ClassClass cc;
+	private List<String> aggregatedClasses = new ArrayList<>();
+	private List<String> adapteeClasses = new ArrayList<>();
 
 	public AdapterDetect(ClassClass cc) {
 		this.defaultereturnType = "";
@@ -40,6 +42,9 @@ public class AdapterDetect implements IDesignPattern {
 
 	@Override
 	public boolean detectPattern(List<MethodClass> methods, List<FieldClass> fields) {
+		if (this.cc.isInterface()) {
+			return false;
+		}
 		String[] interfaceclss = this.cc.getInterfacesname();
 		ClassReader cr;
 		List<MethodClass> allInterfacemethods = new ArrayList<MethodClass>();
@@ -52,6 +57,7 @@ public class AdapterDetect implements IDesignPattern {
 				cr.accept(cmv, ClassReader.EXPAND_FRAMES);
 				List<MethodClass> supermethods = ((ClassMethodVisitor) cmv).getAllMethodsInfo();
 				allInterfacemethods.addAll(supermethods);
+				this.cc.addTarget(ifc);
 			}
 			
 			for (MethodClass mc : methods) {
@@ -79,14 +85,43 @@ public class AdapterDetect implements IDesignPattern {
 				this.cc.addTarget(ifc);
 			}
 			
-			if (this.cc.isInterface()) {
-				return true;
+			for(MethodClass mc : methods){
+				if(mc.getName().equals("<init>")){
+					for(String paramType : mc.getParameters()){
+						for(FieldClass field : fields){
+							if(field.getFieldtype().equals(paramType)){
+								this.aggregatedClasses.add(paramType);
+							}
+						}
+					}
+				}
 			}
+			
+			for(String className : this.aggregatedClasses){
+				int count = 0;
+				for(MethodClass mc : methods){
+					for(MethodClass method : mc.getNeighbours()){
+						if(className.equals(method.getClssnameCalledFrom())){
+							this.cc.addAdaptee(className);
+							count++;
+						}
+					}
+				}
+				if(count==methods.size()){
+					this.adapteeClasses.add(className);
+				}
+			}
+			
+			if(this.adapteeClasses.isEmpty()){
+				return false;
+			}
+			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return false;
+		return true;
 	}
+	
 }

@@ -36,6 +36,12 @@ Works:
 	Kong implemented the ComputeSeqDiagram class inside of toUMLimplement.
 	Wen changed some parts of the asm code to keep track of more information for each method.
 	We both worked on the manual generation of UML and Sequence diagram.
+	
+
+For Mileston #5:
+Design: 
+	we added AdapterDetect, AdapterClass, DecoratorDetect and DecoratorClass for adapter pattern and decorator pattern.
+	
 
 How to use our code?
 	The main function was implemented in ToUML in the toUMLimplement package. Pass in a command follows a format as following as the argument of the ToUML class. 

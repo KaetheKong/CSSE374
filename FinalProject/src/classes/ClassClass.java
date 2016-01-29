@@ -19,7 +19,7 @@ public class ClassClass implements IClass {
 	private boolean isSingleton;
 	private boolean isAdapter;
 	private List<String> target;
-	private String adaptee;
+	private List<String> adapteeClasses;
 
 	public ClassClass(List<MethodClass> methods, List<FieldClass> fields, String superclassname,
 			String[] interfacesname, String access, String classname, boolean isInterface, boolean isAbstract) {
@@ -34,7 +34,7 @@ public class ClassClass implements IClass {
 		this.isSingleton = false;
 		this.isAdapter = false;
 		this.target = new ArrayList<String>();
-		this.setAdaptee(null);
+		adapteeClasses = new ArrayList<>();
 	}
 
 	public void modifyClassname() {
@@ -194,11 +194,11 @@ public class ClassClass implements IClass {
 		this.target.add(targetClassname);
 	}
 	
-	public String getAdaptee() {
-		return adaptee;
+	public List<String> getAdapteeClass() {
+		return this.adapteeClasses;
 	}
 
-	public void setAdaptee(String adaptee) {
-		this.adaptee = adaptee;
+	public void addAdaptee(String adaptee) {
+		this.adapteeClasses.add(adaptee);
 	}
 }

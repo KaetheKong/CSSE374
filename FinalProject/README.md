@@ -26,6 +26,11 @@ For Milestone #3:
 
 Design:
 	We added an extra class inside of toUMLimplement that compute the sequence diagram connection for us. To find the order of the execution of methods, we added extra fields into the visitors class so that we would be able to know the owner of each inner method and parameter that are called by the method to generate diagram for. Also, we added a parsing identifier into toUMLimplement package such that it can identify if it wants to generate a sequence diagram based on the classname and method name given or if it wants to generate a UML diagram based on package name/class name.
+
+For Milestone #4:
+
+Design:
+	we added an singleton detect class and a filed to ClassClass which can keep track of if the class is singleton.
 	
 Works:
 	Kong implemented the ComputeSeqDiagram class inside of toUMLimplement.
@@ -46,3 +51,4 @@ Example command passing in as argument:
 	seq java/util/Collections shuffle List<?> list, Random r true
 	
 The textual code for GraphViz/SDEdit would print to the console. Copy the code over to GraphViz/SDEdit and it would generate the UML Diagram or the sequence diagram as requested.
+

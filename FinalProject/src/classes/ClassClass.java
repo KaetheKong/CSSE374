@@ -1,5 +1,6 @@
 package classes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import designPatterns.SingletonDetect;
@@ -16,14 +17,9 @@ public class ClassClass implements IClass {
 	private boolean isInterface;
 	private boolean isAbstract;
 	private boolean isSingleton;
-
-	public boolean isInterface() {
-		return isInterface;
-	}
-
-	public boolean isAbstract() {
-		return isAbstract;
-	}
+	private boolean isAdapter;
+	private List<String> target;
+	private String adaptee;
 
 	public ClassClass(List<MethodClass> methods, List<FieldClass> fields, String superclassname,
 			String[] interfacesname, String access, String classname, boolean isInterface, boolean isAbstract) {
@@ -36,6 +32,9 @@ public class ClassClass implements IClass {
 		this.isInterface = isInterface;
 		this.isAbstract = isAbstract;
 		this.isSingleton = false;
+		this.isAdapter = false;
+		this.target = new ArrayList<String>();
+		this.setAdaptee(null);
 	}
 
 	public void modifyClassname() {
@@ -165,13 +164,41 @@ public class ClassClass implements IClass {
 		checkSingleton();
 		return isSingleton;
 	}
+	
+	public boolean isInterface() {
+		return isInterface;
+	}
 
-	public void setSingleton(boolean isSingleton) {
-		this.isSingleton = isSingleton;
+	public boolean isAbstract() {
+		return isAbstract;
+	}
+
+	public boolean isAdapter() {
+		return isAdapter;
 	}
 
 	public void checkSingleton() {
 		IDesignPattern sd = new SingletonDetect(this.classname);
 		this.isSingleton = sd.detectPattern(this.methods, this.fields);
+	}
+	
+	public void checkAdapter() {
+		
+	}
+
+	public List<String> getTarget() {
+		return target;
+	}
+	
+	public void addTarget(String targetClassname) {
+		this.target.add(targetClassname);
+	}
+	
+	public String getAdaptee() {
+		return adaptee;
+	}
+
+	public void setAdaptee(String adaptee) {
+		this.adaptee = adaptee;
 	}
 }

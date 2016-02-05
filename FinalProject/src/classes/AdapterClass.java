@@ -5,7 +5,7 @@ import java.util.List;
 import Utilities.Parser;
 import interfaces.IConnection;
 
-public class DecoratorClass extends ClassClass implements IConnection {
+public class AdapterClass extends ClassClass implements IConnection {
 
 	private ClassClass cc;
 	private String edge;
@@ -14,12 +14,12 @@ public class DecoratorClass extends ClassClass implements IConnection {
 	@SuppressWarnings("unused")
 	private boolean includeJava;
 
-	public DecoratorClass(ClassClass cc) {
+	public AdapterClass(ClassClass cc) {
 		super(cc.getMethods(), cc.getFields(), cc.getSuperclassname(), cc.getInterfacesname(), cc.getAccess(),
 				cc.getClassname(), cc.isInterface(), cc.isAbstract(), cc.getDpd());
 		this.cc = cc;
-		this.edge = "    edge [\n\t style = \"solid\"\n    \t label = \"\\<\\<decorate\\>\\>\"\n    ]\n";
-		this.type = "Decorator";
+		this.edge = "    edge [\n\t style = \"solid\"\n    \t label = \"\\<\\<adapts\\>\\>\"\n    ]\n";
+		this.type = "Adapter";
 		this.p = new Parser(null);
 		this.includeJava = false;
 	}
@@ -36,7 +36,8 @@ public class DecoratorClass extends ClassClass implements IConnection {
 			if (this.cc.getPatternDetector().get(this.type)) {
 				List<ClassClass> spclassname = this.cc.getAllPatternClassClassInfo();
 				for (ClassClass c : spclassname) {
-					if (c.getClass().toString().contains("ComponentClass")) {
+					if (c.getClass().toString().contains("TargetClass")
+							|| c.getClass().toString().contains("AdapteeClass")) {
 						this.p.setToParse(c.getClassname());
 						String str = this.p.parse();
 						x = x + "    " + this.cc.getClassname() + "->" + str + "\n";

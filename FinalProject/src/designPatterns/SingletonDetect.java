@@ -117,7 +117,7 @@ public class SingletonDetect implements IDesignPattern {
 	}
 
 	@Override
-	public ClassClass getInformation() {
+	public List<ClassClass> getInformation() {
 		return null;
 	}
 

@@ -19,11 +19,6 @@ public class ClassClass implements IClass {
 	private String classname;
 	private boolean isInterface;
 	private boolean isAbstract;
-	private boolean isAdapter;
-	private ClassClass component;
-	private boolean hasDec;
-	private List<String> target;
-	private String adaptee;
 	private DesignPatternData dpd;
 	private Map<String, Boolean> patternDetector;
 	private List<ClassClass> allinfo;
@@ -39,8 +34,6 @@ public class ClassClass implements IClass {
 		this.classname = classname;
 		this.isInterface = isInterface;
 		this.isAbstract = isAbstract;
-		this.target = new ArrayList<String>();
-		this.adaptee = null;
 		this.dpd = dpd;
 		this.patternDetector = new HashMap<String, Boolean>();
 		this.allinfo = new ArrayList<ClassClass>();
@@ -160,8 +153,8 @@ public class ClassClass implements IClass {
 					}
 				}
 				if (!retStr.contains(method.getName() + "(" + totl + ")" + " : " + method.getReturnType())) {
-					retStr = retStr + acs + " " + method.getName() + "(" + totl + ")"
-							+ " : " + method.getReturnType() + "\\l";
+					retStr = retStr + acs + " " + method.getName() + "(" + totl + ")" + " : " + method.getReturnType()
+							+ "\\l";
 				}
 			}
 		}
@@ -199,65 +192,39 @@ public class ClassClass implements IClass {
 		return isAbstract;
 	}
 
-	public boolean isAdapter() {
-		return isAdapter;
-	}
-	public void checkAdapter() {
-
-	}
-
-	public List<String> getTarget() {
-		return target;
-	}
-
-	public void addTarget(String targetClassname) {
-		this.target.add(targetClassname);
-	}
-
-	public String getAdaptee() {
-		return adaptee;
-	}
-
-	public void setAdaptee(String adaptee) {
-		this.adaptee = adaptee;
-	}
-
-	public ClassClass getComponent() {
-		return component;
-	}
-
-	public void setComponent(ClassClass component) {
-		this.component = component;
-	}
-
-	public boolean isHasDec() {
-		return hasDec;
-	}
-
-	public void setHasDec(boolean hasDec) {
-		this.hasDec = hasDec;
-	}
-
 	public void check() {
 		List<IDesignPattern> alldps = this.dpd.getAllDesignPatterns();
 		for (IDesignPattern idp : alldps) {
 			idp.setCc(this);
 			boolean x = idp.detectPattern(this.methods, this.fields);
-			if (idp.getInformation() != null) {
-				this.allinfo.add(idp.getInformation());
+			if (idp.getInformation() != null && !idp.getInformation().isEmpty() && x) {
+				for (ClassClass cc : idp.getInformation()) {
+					if (cc != null && !this.containinfo(cc)) {
+						this.allinfo.add(cc);
+					}
+				}
 			}
 			this.patternDetector.put(idp.getName(), x);
 		}
+	}
+	
+	private boolean containinfo(ClassClass c) {
+		for (ClassClass xcc : this.allinfo) {
+			if (xcc.getClassname().equals(c.getClassname())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public List<ClassClass> getAllPatternClassClassInfo() {
 		return this.allinfo;
 	}
-	
+
 	public Map<String, Boolean> getPatternDetector() {
 		return patternDetector;
 	}
-	
+
 	public ClassClass getCc() {
 		return this;
 	}

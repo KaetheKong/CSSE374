@@ -459,8 +459,10 @@ public class DecoratorDetect implements IDesignPattern {
 	}
 
 	@Override
-	public ClassClass getInformation() {
-		return this.component;
+	public List<ClassClass> getInformation() {
+		List<ClassClass> x = new ArrayList<ClassClass>();
+		x.add(this.component);
+		return x;
 	}
 
 }

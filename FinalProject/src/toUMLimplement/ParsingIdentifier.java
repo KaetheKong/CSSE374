@@ -32,7 +32,7 @@ public class ParsingIdentifier {
 					clssname.add(this.args[i]);
 				}
 			} else {
-				for (int i = 1; i < this.args.length - 1; i++) {
+				for (int i = 1; i < this.args.length - 2; i++) {
 					String arg = this.args[i];
 					for (@SuppressWarnings("rawtypes")
 					Class c : ClassFinder.getClasses(arg)) {

@@ -11,6 +11,7 @@ import java.util.Map;
 import Data.ClassnameData;
 import Data.DesignPatternData;
 import classes.AbstractClass;
+import classes.AdapterClass;
 import classes.AssociationClass;
 import classes.ClassClass;
 import classes.DecoratorClass;
@@ -82,7 +83,6 @@ public class ToUML {
 				MethodClass temp = methods.get(name);
 				if (!isSeq) {
 					temp.setAlltypes(mtoType.get(name));
-					// temp.setParameters(mtoType.get(name));
 				}
 				methods.replace(name, temp);
 			}
@@ -131,7 +131,12 @@ public class ToUML {
 					additionalclasses.put(pci.getClassname(), pci.getCc());
 				}
 			}
-			Classtext = Classtext + t + comptxt + "\n";
+			if (!Classtext.contains(t)) {
+				Classtext = Classtext + t;
+			}
+			if (!Classtext.contains(comptxt)) {
+				Classtext = Classtext + comptxt + "\n";
+			}
 		}
 
 		ClassnameData cd = new ClassnameData(Classnames);
@@ -143,13 +148,15 @@ public class ToUML {
 			IConnection associationClass = new AssociationClass(cc, Classnames, includeJava);
 			IConnection singletonClass = new SingletonClass(cc);
 			IConnection decoratorClass = new DecoratorClass(cc);
-			
+			IConnection adapterClass = new AdapterClass(cc);
+
 			interfaceclss.setIncludeJava(includeJava);
 			absClass.setIncludeJava(includeJava);
 			usesClass.setIncludeJava(includeJava);
 			associationClass.setIncludeJava(includeJava);
 			singletonClass.setIncludeJava(includeJava);
 			decoratorClass.setIncludeJava(includeJava);
+			adapterClass.setIncludeJava(includeJava);
 
 			cd.addConnections(interfaceclss);
 			cd.addConnections(absClass);
@@ -157,6 +164,7 @@ public class ToUML {
 			cd.addConnections(associationClass);
 			cd.addConnections(singletonClass);
 			cd.addConnections(decoratorClass);
+			cd.addConnections(adapterClass);
 		}
 
 		for (ClassClass cc : additionalclasses.values()) {
@@ -167,13 +175,15 @@ public class ToUML {
 			IConnection associationClass = new AssociationClass(cc, Classnames, includeJava);
 			IConnection singletonClass = new SingletonClass(cc);
 			IConnection decoratorClass = new DecoratorClass(cc);
-			
+			IConnection adapterClass = new AdapterClass(cc);
+
 			interfaceclss.setIncludeJava(includeJava);
 			absClass.setIncludeJava(includeJava);
 			usesClass.setIncludeJava(includeJava);
 			associationClass.setIncludeJava(includeJava);
 			singletonClass.setIncludeJava(includeJava);
 			decoratorClass.setIncludeJava(includeJava);
+			adapterClass.setIncludeJava(includeJava);
 
 			cd.addConnections(interfaceclss);
 			cd.addConnections(absClass);
@@ -181,6 +191,7 @@ public class ToUML {
 			cd.addConnections(associationClass);
 			cd.addConnections(singletonClass);
 			cd.addConnections(decoratorClass);
+			cd.addConnections(adapterClass);
 		}
 
 		if (!isSeq) {

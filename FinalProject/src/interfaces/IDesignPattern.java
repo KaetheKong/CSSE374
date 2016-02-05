@@ -13,5 +13,5 @@ public interface IDesignPattern {
 	public String getName();
 	public String getColorSetUp();
 	public void setCc(ClassClass cc);
-	public ClassClass getInformation();
+	public List<ClassClass> getInformation();
 }

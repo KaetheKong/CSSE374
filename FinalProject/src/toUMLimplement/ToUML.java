@@ -9,14 +9,19 @@ import java.util.List;
 import java.util.Map;
 
 import Data.ClassnameData;
+import Data.DesignPatternData;
 import classes.AbstractClass;
 import classes.AssociationClass;
 import classes.ClassClass;
+import classes.DecoratorClass;
 import classes.FieldClass;
 import classes.InterfaceClass;
 import classes.MethodClass;
 import classes.SingletonClass;
 import classes.UsesClass;
+import designPatterns.AdapterDetect;
+import designPatterns.DecoratorDetect;
+import designPatterns.SingletonDetect;
 import implementation.CodeASM;
 import interfaces.IConnection;
 
@@ -30,6 +35,7 @@ public class ToUML {
 		Map<String, ClassClass> classes = new HashMap<String, ClassClass>();
 		Map<String, Map<String, ArrayList<String>>> owner = new HashMap<String, Map<String, ArrayList<String>>>();
 		Map<String, Map<String, ArrayList<String>>> methodCall = new HashMap<String, Map<String, ArrayList<String>>>();
+		Map<String, ClassClass> additionalclasses = new HashMap<String, ClassClass>();
 
 		String UMLText = "digraph G {\n";
 		String Classtext = "";
@@ -43,6 +49,14 @@ public class ToUML {
 
 		boolean isSeq = pi.isSeq();
 		boolean includeJava = pi.isIncludeJava();
+		DesignPatternData dpd = new DesignPatternData();
+		SingletonDetect sd = new SingletonDetect(null);
+		DecoratorDetect dd = new DecoratorDetect(null);
+		AdapterDetect ad = new AdapterDetect(null);
+
+		dpd.add(sd);
+		dpd.add(dd);
+		dpd.add(ad);
 
 		if (isSeq) {
 			methodname = pi.getMethodName();
@@ -67,7 +81,8 @@ public class ToUML {
 			for (String name : mtoType.keySet()) {
 				MethodClass temp = methods.get(name);
 				if (!isSeq) {
-					temp.setParameters(mtoType.get(name));
+					temp.setAlltypes(mtoType.get(name));
+					// temp.setParameters(mtoType.get(name));
 				}
 				methods.replace(name, temp);
 			}
@@ -100,13 +115,23 @@ public class ToUML {
 
 			ClassClass newCC = new ClassClass(allMethods, allfields, ASMParser.getSuperclassName(),
 					ASMParser.getClassInterfaces(), ASMParser.getClassAccess(), ASMParser.getClassName(),
-					ASMParser.isInterface(), ASMParser.isAbstract());
-			classes.put(className, newCC);
+					ASMParser.isInterface(), ASMParser.isAbstract(), dpd);
+			if (!classes.containsKey(className)) {
+				classes.put(className, newCC);
+			}
 		}
 
 		for (String cc : classes.keySet()) {
 			String t = classes.get(cc).toUMLString();
-			Classtext = Classtext + t + "\n";
+			String comptxt = "";
+			if (classes.get(cc).getAllPatternClassClassInfo() != null) {
+				List<ClassClass> patternclassinfor = classes.get(cc).getAllPatternClassClassInfo();
+				for (ClassClass pci : patternclassinfor) {
+					comptxt += pci.toUMLString();
+					additionalclasses.put(pci.getClassname(), pci.getCc());
+				}
+			}
+			Classtext = Classtext + t + comptxt + "\n";
 		}
 
 		ClassnameData cd = new ClassnameData(Classnames);
@@ -115,14 +140,47 @@ public class ToUML {
 			IConnection interfaceclss = new InterfaceClass(cc);
 			IConnection absClass = new AbstractClass(cc);
 			IConnection usesClass = new UsesClass(cc, Classnames);
-			IConnection associationClass = new AssociationClass(cc, Classnames);
+			IConnection associationClass = new AssociationClass(cc, Classnames, includeJava);
 			IConnection singletonClass = new SingletonClass(cc);
+			IConnection decoratorClass = new DecoratorClass(cc);
+			
+			interfaceclss.setIncludeJava(includeJava);
+			absClass.setIncludeJava(includeJava);
+			usesClass.setIncludeJava(includeJava);
+			associationClass.setIncludeJava(includeJava);
+			singletonClass.setIncludeJava(includeJava);
+			decoratorClass.setIncludeJava(includeJava);
 
 			cd.addConnections(interfaceclss);
 			cd.addConnections(absClass);
 			cd.addConnections(usesClass);
 			cd.addConnections(associationClass);
 			cd.addConnections(singletonClass);
+			cd.addConnections(decoratorClass);
+		}
+
+		for (ClassClass cc : additionalclasses.values()) {
+
+			IConnection interfaceclss = new InterfaceClass(cc);
+			IConnection absClass = new AbstractClass(cc);
+			IConnection usesClass = new UsesClass(cc, Classnames);
+			IConnection associationClass = new AssociationClass(cc, Classnames, includeJava);
+			IConnection singletonClass = new SingletonClass(cc);
+			IConnection decoratorClass = new DecoratorClass(cc);
+			
+			interfaceclss.setIncludeJava(includeJava);
+			absClass.setIncludeJava(includeJava);
+			usesClass.setIncludeJava(includeJava);
+			associationClass.setIncludeJava(includeJava);
+			singletonClass.setIncludeJava(includeJava);
+			decoratorClass.setIncludeJava(includeJava);
+
+			cd.addConnections(interfaceclss);
+			cd.addConnections(absClass);
+			cd.addConnections(usesClass);
+			cd.addConnections(associationClass);
+			cd.addConnections(singletonClass);
+			cd.addConnections(decoratorClass);
 		}
 
 		if (!isSeq) {
@@ -130,7 +188,7 @@ public class ToUML {
 			cuc.findConnection();
 			UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + cuc.getConnection() + "} \n";
 			System.out.println(UMLText);
-			
+
 			String filename = "uml_code.txt";
 			BufferedWriter writer = null;
 			try {
@@ -150,7 +208,7 @@ public class ToUML {
 		} else {
 			ComputeSeqDiagram csd = new ComputeSeqDiagram(methodname, methods, includeJava, 5);
 			String t = csd.getText();
-			
+
 			String filename = "seq_code.txt";
 			BufferedWriter writer = null;
 			try {

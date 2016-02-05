@@ -14,6 +14,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 
+import Data.DesignPatternData;
 import asm.ClassDecorationVisitor;
 import asm.ClassFieldVisitor;
 import asm.ClassMethodVisitor;
@@ -22,6 +23,9 @@ import classes.ClassClass;
 import classes.FieldClass;
 import classes.MethodClass;
 import classes.UsesClass;
+import designPatterns.AdapterDetect;
+import designPatterns.DecoratorDetect;
+import designPatterns.SingletonDetect;
 import implementation.CodeASM;
 import interfaces.IConnection;
 
@@ -56,6 +60,15 @@ public class TestToUML {
 
 	@Test
 	public void testUsesClass() {
+		DesignPatternData dpd = new DesignPatternData();
+		SingletonDetect sd = new SingletonDetect(null);
+		DecoratorDetect dd = new DecoratorDetect(null);
+		AdapterDetect ad = new AdapterDetect(null);
+		
+		dpd.add(sd);
+		dpd.add(dd);
+		dpd.add(ad);
+		
 		CodeASM ASMParser = new CodeASM("TestFiles.TestJavaCodeASMParsing");
 		try {
 			ASMParser.run(false);
@@ -80,10 +93,10 @@ public class TestToUML {
 
 		ClassClass newCC = new ClassClass(allmethods, allfields, ASMParser.getSuperclassName(),
 				ASMParser.getClassInterfaces(), ASMParser.getClassAccess(), ASMParser.getClassName(),
-				ASMParser.isInterface(), ASMParser.isAbstract());
+				ASMParser.isInterface(), ASMParser.isAbstract(), dpd);
 
 		IConnection useTest = new UsesClass(newCC, Classnames);
-		String edge = "    edge [\n\t style = \"dashed\"\n\t arrowhead = \"open\"\n    ]\n";
+		String edge = "    edge [\n\t style = \"dashed\"\n\t arrowhead = \"open\"\n\t label = \"\"\n    ]\n";
 		String connections = "";
 		assertEquals(useTest.getEdge(), edge);
 		assertEquals(useTest.getConnection(), connections);
@@ -91,6 +104,16 @@ public class TestToUML {
 	
 	@Test
 	public void testAssociationClass() {
+		
+		DesignPatternData dpd = new DesignPatternData();
+		SingletonDetect sd = new SingletonDetect(null);
+		DecoratorDetect dd = new DecoratorDetect(null);
+		AdapterDetect ad = new AdapterDetect(null);
+		
+		dpd.add(sd);
+		dpd.add(dd);
+		dpd.add(ad);
+		
 		CodeASM ASMParser = new CodeASM("classes.ClassClass");
 		try {
 			ASMParser.run(false);
@@ -115,10 +138,10 @@ public class TestToUML {
 
 		ClassClass newCC = new ClassClass(allmethods, allfields, ASMParser.getSuperclassName(),
 				ASMParser.getClassInterfaces(), ASMParser.getClassAccess(), ASMParser.getClassName(),
-				ASMParser.isInterface(), ASMParser.isAbstract());
+				ASMParser.isInterface(), ASMParser.isAbstract(), dpd);
 
-		IConnection associationTest = new AssociationClass(newCC, Classnames);
-		String edge = "    edge [\n\t style = \"solid\"\n\t arrowhead = \"open\"\n    ]\n";
+		IConnection associationTest = new AssociationClass(newCC, Classnames, false);
+		String edge = "    edge [\n\t style = \"solid\"\n\t arrowhead = \"open\"\n\t label = \"\"\n    ]\n";
 		String connections = "";
 		assertEquals(associationTest.getEdge(), edge);
 		assertEquals(associationTest.getConnection(), connections);

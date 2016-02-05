@@ -25,7 +25,12 @@ public class ParsingIdentifier {
 			}
 		} else if (this.args[0].equals("uml")) {
 			if (this.args[this.args.length - 1].equals("true")) {
-				clssname.add(this.args[1]);
+				this.includeJava = true;
+			}
+			if (this.args[this.args.length - 2].equals("true")) {
+				for (int i = 1; i < this.args.length - 2; i++) {
+					clssname.add(this.args[i]);
+				}
 			} else {
 				for (int i = 1; i < this.args.length - 1; i++) {
 					String arg = this.args[i];

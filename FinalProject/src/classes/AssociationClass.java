@@ -12,15 +12,17 @@ public class AssociationClass extends ClassClass implements IConnection {
 	private List<FieldClass> fields;
 	private List<String> classNames;
 	private String type;
+	private boolean incldJava;
 
-	public AssociationClass(ClassClass cc, List<String> classnames) {
+	public AssociationClass(ClassClass cc, List<String> classnames, boolean includeJava) {
 		super(cc.getMethods(), cc.getFields(), cc.getSuperclassname(), cc.getInterfacesname(), cc.getAccess(),
-				cc.getClassname(), cc.isInterface(), cc.isAbstract());
+				cc.getClassname(), cc.isInterface(), cc.isAbstract(), cc.getDpd());
 		this.cc = cc;
-		this.edge = "    edge [\n\t style = \"solid\"\n\t arrowhead = \"open\"\n    ]\n";
+		this.edge = "    edge [\n\t style = \"solid\"\n\t arrowhead = \"open\"\n\t label = \"\"\n    ]\n";
 		this.fields = cc.getFields();
 		this.classNames = classnames;
 		this.type = "association";
+		this.incldJava = includeJava;
 	}
 
 	@Override
@@ -48,7 +50,7 @@ public class AssociationClass extends ClassClass implements IConnection {
 				}
 			}
 
-			if (!fieldType.startsWith("java") && this.classNames.contains(fieldType)) {
+			if ((!fieldType.startsWith("java") && this.classNames.contains(fieldType)) || this.incldJava) {
 				fieldType = fieldType.replace('.', '/');
 				String[] realname = fieldType.split("/");
 				connect = connect + "    " + cc.getClassname() + "->" + realname[realname.length - 1] + "\n";
@@ -61,6 +63,11 @@ public class AssociationClass extends ClassClass implements IConnection {
 	@Override
 	public String getType() {
 		return this.type;
+	}
+
+	@Override
+	public void setIncludeJava(boolean x) {
+		this.incldJava = x;		
 	}
 
 }

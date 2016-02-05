@@ -12,6 +12,7 @@ public class MethodClass implements IMethod {
 	private String[] exceptions;
 	private String code;
 	private List<String> parameters;
+	private List<String> alltypes;
 	private String signature;
 	private MethodClass callfrom;
 	private String clssnameCalledFrom;
@@ -28,6 +29,7 @@ public class MethodClass implements IMethod {
 		this.signature = signature;
 		this.callfrom = callfrom;
 		this.neighbours = new ArrayList<MethodClass>();
+		this.alltypes = new ArrayList<String>();
 		this.clssnameCalledFrom = classname;
 	}
 
@@ -126,6 +128,14 @@ public class MethodClass implements IMethod {
 
 	public void setNeighbours(List<MethodClass> neighbours) {
 		this.neighbours = neighbours;
+	}
+
+	public List<String> getAlltypes() {
+		return alltypes;
+	}
+
+	public void setAlltypes(List<String> alltypes) {
+		this.alltypes = alltypes;
 	}
 
 }

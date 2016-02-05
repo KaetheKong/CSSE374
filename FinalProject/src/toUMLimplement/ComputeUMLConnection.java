@@ -37,11 +37,11 @@ public class ComputeUMLConnection {
 			differentStrings[count] = "";
 			for (IConnection c : typemap.get(k)) {
 				String cnct = c.getConnection();
-				if (cnct.length() >= 3) {
-					if (!differentStrings[count].contains(c.getEdge())) {
+				if (cnct != null && cnct.length() >= 3) {
+					if (!differentStrings[count].contains(c.getEdge().replace("\\s", ""))) {
 						differentStrings[count] = differentStrings[count] + c.getEdge() + "\n";
 					}
-					if (!differentStrings[count].contains(cnct)) {
+					if (!differentStrings[count].contains(cnct.replace("\\s", ""))) {
 						differentStrings[count] = differentStrings[count] + cnct;
 					}
 				}
@@ -50,7 +50,9 @@ public class ComputeUMLConnection {
 		}
 
 		for (int i = 0; i < differentStrings.length; i++) {
-			this.connection = this.connection + differentStrings[i] + "\n";
+			if (!this.connection.contains(differentStrings[i])) {
+				this.connection = this.connection + differentStrings[i] + "\n";
+			}
 		}
 	}
 

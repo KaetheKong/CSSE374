@@ -3,6 +3,7 @@ package designPatterns;
 import java.util.ArrayList;
 import java.util.List;
 
+import classes.ClassClass;
 import classes.FieldClass;
 import classes.MethodClass;
 import interfaces.IDesignPattern;
@@ -11,11 +12,40 @@ public class SingletonDetect implements IDesignPattern {
 
 	private String defaultreturnType;
 	private List<String> defaultFields;
+	private String name;
+	private String colorSetUp;
+	private ClassClass cc;
 
-	public SingletonDetect(String defaultfield) {
-		this.defaultreturnType = defaultfield;
+	public SingletonDetect(ClassClass cc) {
 		this.defaultFields = new ArrayList<String>();
-		this.defaultFields.add(defaultfield);
+		this.name = "Singleton";
+		this.colorSetUp = "\t style=\"solid\"\n" + "\t color=\"blue\"\n";
+		this.cc = cc;
+		this.setCc(cc);
+	}
+
+	public void setCc(ClassClass cc) {
+		if (cc != null) {
+			String somename = cc.getClassname().replace(".", "/");
+			String[] real = somename.split("/");
+			this.defaultreturnType = real[real.length - 1];
+			this.defaultFields.add(real[real.length - 1]);
+		}
+		this.cc = cc;
+	}
+
+	public ClassClass getCc() {
+		return cc;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String getColorSetUp() {
+		return colorSetUp;
 	}
 
 	@Override
@@ -45,7 +75,8 @@ public class SingletonDetect implements IDesignPattern {
 					MethodClass mtp = mc.getNeighbours().get(i);
 					String clssname = mtp.getClssnameCalledFrom().replace(".", "/");
 					String[] realname = clssname.split("/");
-					if (realname[realname.length - 1].equals(this.defaultreturnType) && mtp.getName().contains("init")) {
+					if (realname[realname.length - 1].equals(this.defaultreturnType)
+							&& mtp.getName().contains("init")) {
 						hasSelfinit = true;
 						break;
 					}
@@ -83,6 +114,11 @@ public class SingletonDetect implements IDesignPattern {
 		}
 
 		return true;
+	}
+
+	@Override
+	public ClassClass getInformation() {
+		return null;
 	}
 
 }

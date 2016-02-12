@@ -3,31 +3,43 @@ package Data;
 import java.util.ArrayList;
 import java.util.List;
 
-import interfaces.IConnection;
+import classes.ClassClass;
+import interfaces.IData;
 
-public class ClassnameData {
+public class ClassnameData implements IData<String>{
 
 	private List<String> classname;
-	private List<IConnection> connections;
 
 	public ClassnameData(List<String> classname) {
-		this.setClassname(classname);
-		this.connections = new ArrayList<IConnection>();
+		this.classname = new ArrayList<>();
 	}
 
-	public void addConnections(IConnection connection) {
-		this.connections.add(connection);
+	@Override
+	public List<String> getData() {
+		return this.classname;
 	}
 
-	public List<String> getClassname() {
-		return classname;
+	@Override
+	public void addData(String data) {
+		this.classname.add(data);		
 	}
 
-	public void setClassname(List<String> classname) {
-		this.classname = classname;
+	@Override
+	public void removeData(String data) {
+		this.classname.remove(data);
 	}
 
-	public List<IConnection> getConnections() {
-		return connections;
+	@Override
+	public void initialize(boolean includeJava, ClassClass cc) {
+		// do nothing
+	}
+
+	@Override
+	public String getEbyName(String name) {
+		return name;
+	}
+
+	@Override
+	public void setAllClassData(List<ClassClass> ccs) {
 	}
 }

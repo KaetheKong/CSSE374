@@ -19,23 +19,17 @@ import asm.ClassMethodVisitor;
 import classes.ClassClass;
 import classes.FieldClass;
 import classes.MethodClass;
-import designPatterns.AdapterDetect;
-import designPatterns.DecoratorDetect;
 import designPatterns.SingletonDetect;
+import interfaces.IData;
+import interfaces.IDesignPattern;
 
 public class TestSingleton {
 
 	@Test
 	public void testRuntime() throws IOException {
 		
-		DesignPatternData dpd = new DesignPatternData();
-		SingletonDetect sd = new SingletonDetect(null);
-		DecoratorDetect dd = new DecoratorDetect(null);
-		AdapterDetect ad = new AdapterDetect(null);
-		
-		dpd.add(sd);
-		dpd.add(dd);
-		dpd.add(ad);
+		IData<IDesignPattern> dpd = new DesignPatternData();
+		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.lang.Runtime");
 		ClassVisitor visitor = new ClassDecorationVisitor(Opcodes.ASM5);
@@ -64,14 +58,8 @@ public class TestSingleton {
 	
 	@Test
 	public void testCalendar() throws IOException {
-		DesignPatternData dpd = new DesignPatternData();
-		SingletonDetect sd = new SingletonDetect(null);
-		DecoratorDetect dd = new DecoratorDetect(null);
-		AdapterDetect ad = new AdapterDetect(null);
-		
-		dpd.add(sd);
-		dpd.add(dd);
-		dpd.add(ad);
+		IData<IDesignPattern> dpd = new DesignPatternData();
+		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.util.Calendar");
 		ClassVisitor visitor = new ClassDecorationVisitor(Opcodes.ASM5);
@@ -101,14 +89,8 @@ public class TestSingleton {
 	@Test
 	public void testDesktop() throws IOException {
 		
-		DesignPatternData dpd = new DesignPatternData();
-		SingletonDetect sd = new SingletonDetect(null);
-		DecoratorDetect dd = new DecoratorDetect(null);
-		AdapterDetect ad = new AdapterDetect(null);
-		
-		dpd.add(sd);
-		dpd.add(dd);
-		dpd.add(ad);
+		IData<IDesignPattern> dpd = new DesignPatternData();
+		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.awt.Desktop");
 		ClassVisitor visitor = new ClassDecorationVisitor(Opcodes.ASM5);
@@ -138,14 +120,8 @@ public class TestSingleton {
 	@Test
 	public void testFilterInputStream() throws IOException {
 		
-		DesignPatternData dpd = new DesignPatternData();
-		SingletonDetect sd = new SingletonDetect(null);
-		DecoratorDetect dd = new DecoratorDetect(null);
-		AdapterDetect ad = new AdapterDetect(null);
-		
-		dpd.add(sd);
-		dpd.add(dd);
-		dpd.add(ad);
+		IData<IDesignPattern> dpd = new DesignPatternData();
+		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.io.FilterInputStream");
 		ClassVisitor visitor = new ClassDecorationVisitor(Opcodes.ASM5);
@@ -175,14 +151,8 @@ public class TestSingleton {
 	@Test
 	public void testChocolateBoiler() throws IOException {
 		
-		DesignPatternData dpd = new DesignPatternData();
-		SingletonDetect sd = new SingletonDetect(null);
-		DecoratorDetect dd = new DecoratorDetect(null);
-		AdapterDetect ad = new AdapterDetect(null);
-		
-		dpd.add(sd);
-		dpd.add(dd);
-		dpd.add(ad);
+		IData<IDesignPattern> dpd = new DesignPatternData();
+		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("TestFiles.ChocolateBoiler");
 		ClassVisitor visitor = new ClassDecorationVisitor(Opcodes.ASM5);

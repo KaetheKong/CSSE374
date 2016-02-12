@@ -36,8 +36,7 @@ public class AdapterClass extends ClassClass implements IConnection {
 			if (this.cc.getPatternDetector().get(this.type)) {
 				List<ClassClass> spclassname = this.cc.getAllPatternClassClassInfo();
 				for (ClassClass c : spclassname) {
-					if (c.getClass().toString().contains("TargetClass")
-							|| c.getClass().toString().contains("AdapteeClass")) {
+					if (c.getClass().toString().contains("AdapteeClass")) {
 						this.p.setToParse(c.getClassname());
 						String str = this.p.parse();
 						x = x + "    " + this.cc.getClassname() + "->" + str + "\n";

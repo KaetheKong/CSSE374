@@ -15,7 +15,6 @@ public class SingletonDetect implements IDesignPattern {
 	private String name;
 	private String colorSetUp;
 	private ClassClass cc;
-
 	public SingletonDetect(ClassClass cc) {
 		this.defaultFields = new ArrayList<String>();
 		this.name = "Singleton";
@@ -119,6 +118,10 @@ public class SingletonDetect implements IDesignPattern {
 	@Override
 	public List<ClassClass> getInformation() {
 		return null;
+	}
+
+	@Override
+	public void setIncludejava(boolean includejava) {		
 	}
 
 }

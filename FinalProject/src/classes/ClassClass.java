@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Data.DesignPatternData;
 import interfaces.IClass;
+import interfaces.IData;
 import interfaces.IDesignPattern;
 
 public class ClassClass implements IClass {
@@ -19,13 +19,13 @@ public class ClassClass implements IClass {
 	private String classname;
 	private boolean isInterface;
 	private boolean isAbstract;
-	private DesignPatternData dpd;
+	private IData<IDesignPattern> dpd;
 	private Map<String, Boolean> patternDetector;
 	private List<ClassClass> allinfo;
 
 	public ClassClass(List<MethodClass> methods, List<FieldClass> fields, String superclassname,
 			String[] interfacesname, String access, String classname, boolean isInterface, boolean isAbstract,
-			DesignPatternData dpd) {
+			IData<IDesignPattern> dpd) {
 		this.methods = methods;
 		this.fields = fields;
 		this.superclassname = superclassname;
@@ -39,7 +39,11 @@ public class ClassClass implements IClass {
 		this.allinfo = new ArrayList<ClassClass>();
 	}
 
-	public DesignPatternData getDpd() {
+	public void setDpd(IData<IDesignPattern> dpd) {
+		this.dpd = dpd;
+	}
+
+	public IData<IDesignPattern> getDpd() {
 		return dpd;
 	}
 
@@ -129,7 +133,7 @@ public class ClassClass implements IClass {
 
 		for (String k : this.patternDetector.keySet()) {
 			if (this.patternDetector.get(k)) {
-				retStr += "\\<\\<" + this.dpd.getIDP(k).getName() + "\\>\\>";
+				retStr += "\\<\\<" + this.dpd.getEbyName(k).getName() + "\\>\\>";
 			}
 		}
 
@@ -163,7 +167,7 @@ public class ClassClass implements IClass {
 
 		for (String k : this.patternDetector.keySet()) {
 			if (this.patternDetector.get(k)) {
-				retStr += this.dpd.getIDP(k).getColorSetUp();
+				retStr += this.dpd.getEbyName(k).getColorSetUp();
 			}
 		}
 		retStr = retStr + "    ]\n";
@@ -193,7 +197,7 @@ public class ClassClass implements IClass {
 	}
 
 	public void check() {
-		List<IDesignPattern> alldps = this.dpd.getAllDesignPatterns();
+		List<IDesignPattern> alldps = this.dpd.getData();
 		for (IDesignPattern idp : alldps) {
 			idp.setCc(this);
 			boolean x = idp.detectPattern(this.methods, this.fields);

@@ -26,6 +26,7 @@ public class DecoratorDetect implements IDesignPattern {
 	private String name;
 	private String colorSetUp;
 	private ClassClass component;
+	private boolean includejava;
 	private Parser p;
 
 	public DecoratorDetect(ClassClass cc) {
@@ -35,6 +36,7 @@ public class DecoratorDetect implements IDesignPattern {
 		this.colorSetUp = "\t style=\"filled\"\n" + "\t fillcolor=\"green\"\n";
 		this.component = null;
 		this.p = new Parser(null);
+		this.includejava = false;
 	}
 
 	@Override
@@ -62,14 +64,19 @@ public class DecoratorDetect implements IDesignPattern {
 			return false;
 		}
 
-		if (!this.cc.getSuperclassname().startsWith("java") && !this.cc.getSuperclassname().contains("Object")) {
-			String spcn = this.cc.getSuperclassname();
-			String[] real = spcn.split("/");
-			String str = spcn;
-			if (real.length > 0) {
-				str = real[real.length - 1];
+		if (this.cc.getSuperclassname() != null) {
+
+			if (!this.cc.getSuperclassname().startsWith("java") && !this.cc.getSuperclassname().contains("Object")) {
+				String spcn = this.cc.getSuperclassname();
+				String[] real = spcn.split("/");
+				String str = spcn;
+				if (real.length > 0) {
+					str = real[real.length - 1];
+				}
+				this.defaultFields.add(str);
 			}
-			this.defaultFields.add(str);
+		} else {
+			return false;
 		}
 
 		for (MethodClass mc : methods) {
@@ -106,7 +113,7 @@ public class DecoratorDetect implements IDesignPattern {
 
 		ClassClass supercc = new ClassClass(supermethods, allfields, cdv.getSuperName(), cdv.getInterfaces(),
 				cdv.getAccess(), cdv.getName(), cdv.isInterface(), cdv.isAbstract(), this.cc.getDpd());
-
+		
 		Map<String, Boolean> superpinfo = supercc.getPatternDetector();
 
 		if (superpinfo != null && !superpinfo.isEmpty()) {
@@ -318,43 +325,46 @@ public class DecoratorDetect implements IDesignPattern {
 				return null;
 
 			List<ClassVisitor> cvs = this.setVisitors(ftype.replace(".", "/"));
-			ClassMethodVisitor cmv = (ClassMethodVisitor) cvs.get(2);
-			ClassFieldVisitor cfv = (ClassFieldVisitor) cvs.get(1);
-			ClassDecorationVisitor cdv = (ClassDecorationVisitor) cvs.get(0);
 
-			List<MethodClass> supermethods = cmv.getAllMethodsInfo();
-			Map<String, FieldClass> fds = cfv.getFieldInfoCollection();
-			List<FieldClass> allfields = new ArrayList<FieldClass>();
+			if (!cvs.isEmpty()) {
+				ClassMethodVisitor cmv = (ClassMethodVisitor) cvs.get(2);
+				ClassFieldVisitor cfv = (ClassFieldVisitor) cvs.get(1);
+				ClassDecorationVisitor cdv = (ClassDecorationVisitor) cvs.get(0);
 
-			for (String f : fds.keySet()) {
-				allfields.add(fds.get(f));
-			}
+				List<MethodClass> supermethods = cmv.getAllMethodsInfo();
+				Map<String, FieldClass> fds = cfv.getFieldInfoCollection();
+				List<FieldClass> allfields = new ArrayList<FieldClass>();
 
-			ClassClass fieldcc = new ClassClass(supermethods, allfields, cdv.getSuperName(), cdv.getInterfaces(),
-					cdv.getAccess(), cdv.getName(), cdv.isInterface(), cdv.isAbstract(), this.cc.getDpd());
+				for (String f : fds.keySet()) {
+					allfields.add(fds.get(f));
+				}
 
-			List<ClassClass> fcs = this.getAncestorClasses(fieldcc, 0);
-			fcs.add(fieldcc);
+				ClassClass fieldcc = new ClassClass(supermethods, allfields, cdv.getSuperName(), cdv.getInterfaces(),
+						cdv.getAccess(), cdv.getName(), cdv.isInterface(), cdv.isAbstract(), this.cc.getDpd());
 
-			for (ClassClass c : cs) {
-				for (ClassClass fci : fcs) {
-					this.p.setToParse(c.getClassname());
-					String str1 = this.p.parse();
-					this.p.setToParse(fci.getClassname());
-					String str2 = this.p.parse();
+				List<ClassClass> fcs = this.getAncestorClasses(fieldcc, 0);
+				fcs.add(fieldcc);
 
-					if (str1.equals(str2)) {
-						result = fc;
+				for (ClassClass c : cs) {
+					for (ClassClass fci : fcs) {
+						this.p.setToParse(c.getClassname());
+						String str1 = this.p.parse();
+						this.p.setToParse(fci.getClassname());
+						String str2 = this.p.parse();
+
+						if (str1.equals(str2)) {
+							result = fc;
+							break;
+						}
+					}
+					if (result != null) {
 						break;
 					}
 				}
+
 				if (result != null) {
 					break;
 				}
-			}
-
-			if (result != null) {
-				break;
 			}
 		}
 		return result;
@@ -376,10 +386,14 @@ public class DecoratorDetect implements IDesignPattern {
 		List<String> allPossibleSupers = new ArrayList<String>();
 
 		for (int i = 0; i < interfaceclss.length; i++) {
-			allPossibleSupers.add(interfaceclss[i]);
+			if (!interfaceclss[i].startsWith("java") || this.includejava) {
+				allPossibleSupers.add(interfaceclss[i]);
+			}
 		}
 
-		allPossibleSupers.add(clazzc.getSuperclassname());
+		if (!clazzc.getSuperclassname().startsWith("java") || this.includejava) {
+			allPossibleSupers.add(clazzc.getSuperclassname());
+		}
 
 		for (String ifc : allPossibleSupers) {
 			List<ClassVisitor> cvs = this.setVisitors(ifc);
@@ -422,7 +436,7 @@ public class DecoratorDetect implements IDesignPattern {
 			x.add(fieldVisitor);
 			x.add(cmv);
 		} catch (IOException e) {
-			System.out.println("Class not found!");
+			// System.out.println("Class not found!");
 		}
 
 		return x;
@@ -463,6 +477,11 @@ public class DecoratorDetect implements IDesignPattern {
 		List<ClassClass> x = new ArrayList<ClassClass>();
 		x.add(this.component);
 		return x;
+	}
+
+	@Override
+	public void setIncludejava(boolean includejava) {
+		this.includejava = includejava;
 	}
 
 }

@@ -30,7 +30,7 @@ public class ClassFieldVisitor extends ClassVisitor {
 		String accessStr = checkAccessStr(access);
 		FieldClass newField = new FieldClass(name, accessStr, type, value, signature);
 		this.fieldInfoCollection.put(name, newField);
-
+		
 		return toDecorats;
 	}
 

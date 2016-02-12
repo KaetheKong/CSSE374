@@ -14,4 +14,5 @@ public interface IDesignPattern {
 	public String getColorSetUp();
 	public void setCc(ClassClass cc);
 	public List<ClassClass> getInformation();
+	public void setIncludejava(boolean includejava);
 }

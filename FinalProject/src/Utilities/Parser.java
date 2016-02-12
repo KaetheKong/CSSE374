@@ -1,5 +1,7 @@
 package Utilities;
 
+import toUMLimplement.ToUML;
+
 public class Parser {
 	private String toParse;
 	
@@ -19,5 +21,14 @@ public class Parser {
 
 	public void setToParse(String toParse) {
 		this.toParse = toParse;
+	}
+	
+	public boolean containPrimType(String type) {
+		for (int i = 0; i < ToUML.PRIMITIVE_TYPE.length; i++) {
+			if (type.toLowerCase().equals(ToUML.PRIMITIVE_TYPE[i].toLowerCase())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

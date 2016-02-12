@@ -5,20 +5,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Data.ClassnameData;
 import interfaces.IConnection;
+import interfaces.IData;
 
 public class ComputeUMLConnection {
 	private String connection;
-	private ClassnameData cd;
+	private IData<IConnection> cnctd;
 
-	public ComputeUMLConnection(ClassnameData cd) {
-		this.cd = cd;
+	public ComputeUMLConnection(IData<String> cd, IData<IConnection> cnctd) {
+		this.cnctd = cnctd;
 		this.connection = "";
 	}
 
 	public void findConnection() {
-		List<IConnection> connects = cd.getConnections();
+		List<IConnection> connects = this.cnctd.getData();
 		Map<String, ArrayList<IConnection>> typemap = new HashMap<String, ArrayList<IConnection>>();
 		for (IConnection connect : connects) {
 			if (!typemap.keySet().contains(connect.getType())) {

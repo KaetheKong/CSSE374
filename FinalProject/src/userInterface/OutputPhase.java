@@ -30,14 +30,15 @@ public class OutputPhase extends JFrame {
 	}
 
 	public void run() {
+		
 		this.oc.setButtons();
 		
 		this.tsp = new JScrollPane();
 		this.tsp.setViewportView(this.oc);
 		this.tsp.setAutoscrolls(true);
 		
-		this.tsp.setLocation(0, 0);
-		this.tsp.setBounds(0, 0, 230, 900);
+		this.tsp.setLocation(0, 10);
+		this.tsp.setBounds(0, 10, 230, 900);
 		this.oc.setPreferredSize(new Dimension(200, 900));
 
 		this.op.setOutputDir(this.fileInfo.get("output-directory"));
@@ -46,8 +47,8 @@ public class OutputPhase extends JFrame {
 		this.jsp.setViewportView(this.op);
 		this.jsp.setAutoscrolls(true);
 
-		this.jsp.setLocation(231, 0);
-		this.jsp.setBounds(231, 0, 770, 900);
+		this.jsp.setLocation(231, 10);
+		this.jsp.setBounds(231, 10, 770, 900);
 		
 		this.add(this.tsp);
 		this.add(this.jsp);

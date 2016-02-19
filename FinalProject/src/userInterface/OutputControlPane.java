@@ -9,9 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+
 import Data.DesignPatternGenInfoData;
 import classes.ClassClass;
 import toUMLimplement.UMLGenerator;
@@ -30,7 +32,9 @@ public class OutputControlPane extends JPanel implements ActionListener {
 	private Map<String, String> fileInfo;
 	private DotLauncher dl;
 	private OutputPhase ops;
+	private UserInterfaceLoader oifl;
 	private DesignPatternGenInfoData dpgid;
+	private JButton reload;
 
 	public OutputControlPane(UMLGenerator ug, Map<String, String> fileInfo, OutputPhase ops, UserInterfaceLoader uifl) {
 		this.ugo = ug;
@@ -43,6 +47,11 @@ public class OutputControlPane extends JPanel implements ActionListener {
 		this.dl = new DotLauncher(null, null);
 		this.ops = ops;
 		this.dpgid = uifl.getDpfid();
+		this.reload = new JButton("Reload");
+		this.add(this.reload);
+		this.reload.setLocation(50, 800);
+		this.reload.setBounds(50, 800, 100, 20);
+		this.oifl = uifl;
 	}
 
 	public void setFileInfo(Map<String, String> fileInfo) {
@@ -50,6 +59,13 @@ public class OutputControlPane extends JPanel implements ActionListener {
 	}
 
 	public void setButtons() {
+		reload.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ops.dispose();	
+				oifl.reload();
+			}
+		});
 		String pss = this.fileInfo.get("phases");
 		String[] phases = pss.split(", ");
 		int x = 5;

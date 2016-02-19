@@ -15,10 +15,16 @@ public class DesignPatternData implements IData<IDesignPattern>{
 	
 	private List<IDesignPattern> allDesignPatterns;
 	private List<ClassClass> allClasses;
+	private int adpdpt;
+	private int decordpt;
+	private int compdpt;
 	
-	public DesignPatternData() {
+	public DesignPatternData(int adapterDpt, int decorDpt, int compDpt) {
 		this.allDesignPatterns = new ArrayList<IDesignPattern>();
 		this.allClasses = new ArrayList<ClassClass>();
+		this.adpdpt = adapterDpt;
+		this.decordpt = decorDpt;
+		this.compdpt = compDpt;
 	}
 
 	@Override
@@ -48,6 +54,10 @@ public class DesignPatternData implements IData<IDesignPattern>{
 		dd.setIncludejava(includeJava);
 		ad.setIncludejava(includeJava);
 		compd.setIncludejava(includeJava);
+		
+		if (this.adpdpt > 0) ad.setDepth(this.adpdpt);
+		if (this.decordpt > 0) dd.setDepth(this.decordpt);
+		if (this.compdpt > 0) compd.setDepth(this.compdpt);
 		
 		this.allDesignPatterns.add(sd);
 		this.allDesignPatterns.add(dd);

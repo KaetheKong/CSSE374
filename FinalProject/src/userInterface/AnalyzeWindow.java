@@ -40,6 +40,7 @@ public class AnalyzeWindow extends JPanel implements ActionListener, PropertyCha
 	// private static final String MAP_FIELD_5 = "Phases";
 	private static final String MAP_FIELD_6 = "Adapter-MethodDelegation";
 	private static final String MAP_FIELD_7 = "Decorator-MethodDelegation";
+	private static final String MAP_FIELD_8 = "Composite-MethodDelegation";
 	// private static final String MAP_FIELD_8 = "Singleton-RequireGetInstance";
 
 	public AnalyzeWindow(LoadWindow lw, UserInterfaceLoader uifl) {
@@ -110,9 +111,12 @@ public class AnalyzeWindow extends JPanel implements ActionListener, PropertyCha
 					args += classesToDrawUml + " ";
 					args += "true ";
 					args += "true ";
-					args += fileInfo.get(MAP_FIELD_6.toLowerCase()) + " ";
-					args += fileInfo.get(MAP_FIELD_7.toLowerCase()) + " ";
-					args += "-1";
+					if (fileInfo.get(MAP_FIELD_6.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_6.toLowerCase()) + " ";
+					else args += "-1";
+					if (fileInfo.get(MAP_FIELD_7.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_7.toLowerCase()) + " ";
+					else args += "-1";
+					if (fileInfo.get(MAP_FIELD_8.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_8.toLowerCase()) + " ";
+					else args += "-1";
 
 					try {
 						Thread.sleep(1000);

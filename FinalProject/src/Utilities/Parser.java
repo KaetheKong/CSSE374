@@ -24,8 +24,12 @@ public class Parser {
 	}
 	
 	public boolean containPrimType(String type) {
+		this.toParse = type;
+		
+		String x = this.parse();
+		
 		for (int i = 0; i < ToUML.PRIMITIVE_TYPE.length; i++) {
-			if (type.toLowerCase().equals(ToUML.PRIMITIVE_TYPE[i].toLowerCase())) {
+			if (x.toLowerCase().equals(ToUML.PRIMITIVE_TYPE[i].toLowerCase())) {
 				return true;
 			}
 		}

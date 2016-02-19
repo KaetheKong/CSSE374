@@ -3,6 +3,7 @@ package classes;
 import java.util.ArrayList;
 import java.util.List;
 
+import Utilities.Parser;
 import interfaces.IConnection;
 
 public class UsesClass extends ClassClass implements IConnection {
@@ -13,6 +14,7 @@ public class UsesClass extends ClassClass implements IConnection {
 	private List<String> classnames;
 	private String type;
 	private boolean includeJava;
+	private Parser p;
 
 	public UsesClass(ClassClass cc, List<String> classnames) {
 		super(cc.getMethods(), cc.getFields(), cc.getSuperclassname(), cc.getInterfacesname(), cc.getAccess(),
@@ -23,6 +25,7 @@ public class UsesClass extends ClassClass implements IConnection {
 		this.classnames = classnames;
 		this.type = "uses";
 		this.includeJava = false;
+		this.p = new Parser(null);
 	}
 
 	@Override
@@ -54,10 +57,13 @@ public class UsesClass extends ClassClass implements IConnection {
 			for (String paramType : paramTypes) {
 				paramType = paramType.replace('/', '.');
 				if ((!paramType.startsWith("java") && this.classnames.contains(paramType)) || this.includeJava) {
-					paramType = paramType.replace('.', '/');
-					String[] realname = paramType.split("/");
-					if (!connect.contains(cc.getClassname() + "->" + realname[realname.length - 1])) {
-						connect = connect + "    " + cc.getClassname() + "->" + realname[realname.length - 1] + "\n";
+					if (!this.p.containPrimType(paramType)) {
+						paramType = paramType.replace('.', '/').replace(";", "");
+						String[] realname = paramType.split("/");
+						if (!connect.contains(cc.getClassname() + "->" + realname[realname.length - 1])) {
+							connect = connect + "    " + cc.getClassname() + "->" + realname[realname.length - 1]
+									+ "\n";
+						}
 					}
 				}
 			}

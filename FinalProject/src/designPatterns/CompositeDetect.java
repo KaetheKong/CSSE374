@@ -31,6 +31,7 @@ public class CompositeDetect implements IDesignPattern {
 	private String name;
 	private Parser p;
 	private String colorSetUp;
+	private int depth;
 
 	public CompositeDetect(ClassClass cc, List<ClassClass> allccs) {
 		this.cc = cc;
@@ -43,6 +44,7 @@ public class CompositeDetect implements IDesignPattern {
 		this.name = "Composite";
 		this.allClassesInSystem = new ArrayList<ClassClass>();
 		this.allClassesInSystem.addAll(allccs);
+		this.depth = 3;
 	}
 
 	@Override
@@ -185,19 +187,30 @@ public class CompositeDetect implements IDesignPattern {
 
 	private void setLeafClasses(ClassClass ccc) {
 		for (ClassClass x : this.allClassesInSystem) {
-			if (x.getSuperclassname() != null && x.getSuperclassname().length() > 0) {
-				this.p.setToParse(x.getSuperclassname());
-				String str1 = this.p.parse();
-				this.p.setToParse(ccc.getClassname());
-				String str2 = this.p.parse();
-				this.p.setToParse(this.cc.getClassname());
-				String str3 = this.p.parse();
-				this.p.setToParse(x.getClassname());
-				String str4 = this.p.parse();
 
-				if (!str3.toLowerCase().equals(str4.toLowerCase()) && str1.toLowerCase().equals(str2.toLowerCase())) {
-					LeafClass lc = new LeafClass(x);
-					this.allinformation.add(lc);
+			List<ClassClass> ancClasses = this.getAncestorClasses(x, 0);
+
+			for (ClassClass t : ancClasses) {
+				if (t.getClassname() != null && t.getClassname().length() > 0) {
+					this.p.setToParse(t.getClassname());
+					String str1 = this.p.parse();
+					this.p.setToParse(ccc.getClassname());
+					String str2 = this.p.parse();
+					this.p.setToParse(this.cc.getClassname());
+					String str3 = this.p.parse();
+					this.p.setToParse(x.getClassname());
+					String str4 = this.p.parse();
+
+					if (!str3.toLowerCase().equals(str4.toLowerCase())
+							&& str1.toLowerCase().equals(str2.toLowerCase())) {
+						LeafClass lc = new LeafClass(x);
+						this.allinformation.add(lc);
+					}
+
+					if (str1.toLowerCase().equals(str3.toLowerCase())) {
+						LeafClass lc = new LeafClass(x);
+						this.allinformation.add(lc);
+					}
 				}
 			}
 		}
@@ -212,5 +225,96 @@ public class CompositeDetect implements IDesignPattern {
 			}
 		}
 		return false;
+	}
+
+	private List<ClassClass> getAncestorClasses(ClassClass clazzc, int count) {
+		List<ClassClass> ancestorClass = new ArrayList<ClassClass>();
+		if ((clazzc.getClassname().toLowerCase().startsWith("java")
+				&& clazzc.getClassname().toLowerCase().contains("object")) || count > this.depth) {
+			return ancestorClass;
+		}
+
+		if ((clazzc.getSuperclassname().toLowerCase().startsWith("java")
+				&& clazzc.getSuperclassname().toLowerCase().contains("object")) || count > this.depth) {
+			return ancestorClass;
+		}
+
+		String[] interfaceclss = clazzc.getInterfacesname();
+		List<String> allPossibleSupers = new ArrayList<String>();
+
+		for (int i = 0; i < interfaceclss.length; i++) {
+			if (!interfaceclss[i].startsWith("java") || this.includeJava) {
+				allPossibleSupers.add(interfaceclss[i]);
+			}
+		}
+
+		if (!clazzc.getSuperclassname().startsWith("java") || this.includeJava) {
+			allPossibleSupers.add(clazzc.getSuperclassname());
+		}
+
+		for (String ifc : allPossibleSupers) {
+			List<ClassVisitor> cvs = this.setVisitors(ifc);
+			ClassMethodVisitor cmv = (ClassMethodVisitor) cvs.get(2);
+			ClassFieldVisitor cfv = (ClassFieldVisitor) cvs.get(1);
+			ClassDecorationVisitor cdv = (ClassDecorationVisitor) cvs.get(0);
+
+			List<MethodClass> supermethods = cmv.getAllMethodsInfo();
+			Map<String, FieldClass> fds = cfv.getFieldInfoCollection();
+			List<FieldClass> allfields = new ArrayList<FieldClass>();
+
+			for (String f : fds.keySet()) {
+				allfields.add(fds.get(f));
+			}
+
+			ClassClass interfacecc = new ClassClass(supermethods, allfields, cdv.getSuperName(), cdv.getInterfaces(),
+					cdv.getAccess(), cdv.getName(), cdv.isInterface(), cdv.isAbstract(), this.cc.getDpd());
+			ancestorClass.add(interfacecc);
+
+			if (cdv.getInterfaces().length > 0 || cdv.getSuperName().length() > 0 || cdv.getSuperName() != null) {
+				List<ClassClass> subcc = getAncestorClasses(interfacecc, count + 1);
+				for (ClassClass c : subcc) {
+					this.addwithoutduplication(ancestorClass, c);
+				}
+			}
+		}
+		return ancestorClass;
+	}
+
+	public void setDepth(int depth) {
+		this.depth = depth;
+	}
+
+	private List<ClassVisitor> setVisitors(String name) {
+		ClassReader cr;
+		List<ClassVisitor> x = new ArrayList<ClassVisitor>();
+		try {
+			cr = new ClassReader(name);
+			ClassVisitor visitor = new ClassDecorationVisitor(Opcodes.ASM5);
+			ClassVisitor fieldVisitor = new ClassFieldVisitor(Opcodes.ASM5, visitor);
+			ClassMethodVisitor cmv = new ClassMethodVisitor(Opcodes.ASM5, fieldVisitor);
+			cr.accept(cmv, ClassReader.EXPAND_FRAMES);
+			x.add(visitor);
+			x.add(fieldVisitor);
+			x.add(cmv);
+		} catch (IOException e) {
+			// System.out.println("Class not found!");
+		}
+
+		return x;
+
+	}
+
+	private void addwithoutduplication(List<ClassClass> ccs, ClassClass c) {
+		this.p.setToParse(c.getClassname());
+		String cname = this.p.parse();
+
+		for (int i = 0; i < ccs.size(); i++) {
+			this.p.setToParse(ccs.get(i).getClassname());
+			String ccsnm = this.p.parse();
+			if (cname.equals(ccsnm))
+				return;
+		}
+
+		ccs.add(c);
 	}
 }

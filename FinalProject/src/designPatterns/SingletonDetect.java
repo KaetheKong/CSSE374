@@ -24,6 +24,7 @@ public class SingletonDetect implements IDesignPattern {
 	}
 
 	public void setCc(ClassClass cc) {
+		this.defaultFields = new ArrayList<String>();
 		if (cc != null) {
 			String somename = cc.getClassname().replace(".", "/");
 			String[] real = somename.split("/");
@@ -122,6 +123,12 @@ public class SingletonDetect implements IDesignPattern {
 
 	@Override
 	public void setIncludejava(boolean includejava) {		
+	}
+
+	@Override
+	public void setDepth(int d) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

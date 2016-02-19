@@ -3,6 +3,7 @@ package classes;
 import java.util.ArrayList;
 import java.util.List;
 
+import Utilities.Parser;
 import interfaces.IConnection;
 
 public class AssociationClass extends ClassClass implements IConnection {
@@ -13,6 +14,7 @@ public class AssociationClass extends ClassClass implements IConnection {
 	private List<String> classNames;
 	private String type;
 	private boolean incldJava;
+	private Parser p;
 
 	public AssociationClass(ClassClass cc, List<String> classnames, boolean includeJava) {
 		super(cc.getMethods(), cc.getFields(), cc.getSuperclassname(), cc.getInterfacesname(), cc.getAccess(),
@@ -23,6 +25,7 @@ public class AssociationClass extends ClassClass implements IConnection {
 		this.classNames = classnames;
 		this.type = "association";
 		this.incldJava = includeJava;
+		this.p = new Parser(null);
 	}
 
 	@Override
@@ -51,9 +54,11 @@ public class AssociationClass extends ClassClass implements IConnection {
 			}
 
 			if ((!fieldType.startsWith("java") && this.classNames.contains(fieldType)) || this.incldJava) {
-				fieldType = fieldType.replace('.', '/');
-				String[] realname = fieldType.split("/");
-				connect = connect + "    " + cc.getClassname() + "->" + realname[realname.length - 1] + "\n";
+				if (!this.p.containPrimType(fieldType)) {
+					fieldType = fieldType.replace('.', '/');
+					String[] realname = fieldType.split("/");
+					connect = connect + "    " + cc.getClassname() + "->" + realname[realname.length - 1] + "\n";
+				}
 			}
 
 		}
@@ -67,7 +72,7 @@ public class AssociationClass extends ClassClass implements IConnection {
 
 	@Override
 	public void setIncludeJava(boolean x) {
-		this.incldJava = x;		
+		this.incldJava = x;
 	}
 
 }

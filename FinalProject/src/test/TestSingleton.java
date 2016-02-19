@@ -28,7 +28,7 @@ public class TestSingleton {
 	@Test
 	public void testRuntime() throws IOException {
 		
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(0, 0, 0);
 		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.lang.Runtime");
@@ -58,7 +58,7 @@ public class TestSingleton {
 	
 	@Test
 	public void testCalendar() throws IOException {
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(0, 0, 0);
 		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.util.Calendar");
@@ -89,7 +89,7 @@ public class TestSingleton {
 	@Test
 	public void testDesktop() throws IOException {
 		
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(0, 0, 0);
 		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.awt.Desktop");
@@ -120,7 +120,7 @@ public class TestSingleton {
 	@Test
 	public void testFilterInputStream() throws IOException {
 		
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(0, 0, 0);
 		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.io.FilterInputStream");
@@ -151,7 +151,7 @@ public class TestSingleton {
 	@Test
 	public void testChocolateBoiler() throws IOException {
 		
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(0, 0, 0);
 		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("TestFiles.ChocolateBoiler");

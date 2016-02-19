@@ -59,7 +59,7 @@ public class TestToUML {
 
 	@Test
 	public void testUsesClass() {
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(0, 0, 0);
 		dpd.initialize(true, null);
 		
 		CodeASM ASMParser = new CodeASM("TestFiles.TestJavaCodeASMParsing");
@@ -98,7 +98,7 @@ public class TestToUML {
 	@Test
 	public void testAssociationClass() {
 		
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(0, 0, 0);
 		dpd.initialize(true, null);
 		
 		CodeASM ASMParser = new CodeASM("classes.ClassClass");

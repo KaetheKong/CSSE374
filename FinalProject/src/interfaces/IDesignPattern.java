@@ -15,4 +15,5 @@ public interface IDesignPattern {
 	public void setCc(ClassClass cc);
 	public List<ClassClass> getInformation();
 	public void setIncludejava(boolean includejava);
+	public void setDepth(int d);
 }

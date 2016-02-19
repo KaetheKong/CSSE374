@@ -37,7 +37,7 @@ public class ComputeUMLConnection {
 			differentStrings[count] = "";
 			for (IConnection c : typemap.get(k)) {
 				String cnct = c.getConnection();
-				if (cnct != null && cnct.length() >= 3) {
+				if (cnct != null && cnct.length() >= 3 && !this.checkcont(differentStrings, cnct)) {
 					if (!differentStrings[count].contains(c.getEdge().replace("\\s", ""))) {
 						differentStrings[count] = differentStrings[count] + c.getEdge() + "\n";
 					}
@@ -62,5 +62,16 @@ public class ComputeUMLConnection {
 
 	public void setConnection(String connection) {
 		this.connection = connection;
+	}
+	
+	private boolean checkcont(String[] diffstrs, String cnct) {
+		for (int i = 0; i < diffstrs.length; i++) {
+			if (diffstrs[i] != null && !diffstrs[i].contains("edge [")) {
+				if (diffstrs[i].contains(cnct)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

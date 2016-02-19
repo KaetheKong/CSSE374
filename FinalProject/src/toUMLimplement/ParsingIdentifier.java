@@ -8,11 +8,17 @@ public class ParsingIdentifier {
 	private String[] args;
 	private boolean isSeq;
 	private boolean includeJava;
+	private int adpcount;
+	private int dccount;
+	private int cmcount;
 
 	public ParsingIdentifier(String[] args) {
 		this.args = args;
 		this.isSeq = false;
 		this.includeJava = false;
+		this.adpcount = -1;
+		this.dccount = -1;
+		this.cmcount = -1;
 	}
 
 	public List<String> getClassnames() throws ClassNotFoundException, IOException {
@@ -24,15 +30,19 @@ public class ParsingIdentifier {
 				this.includeJava = true;
 			}
 		} else if (this.args[0].equals("uml")) {
-			if (this.args[this.args.length - 1].equals("true")) {
+			this.cmcount = Integer.parseInt(this.args[this.args.length - 1]);
+			this.dccount = Integer.parseInt(this.args[this.args.length - 2]);
+			this.adpcount = Integer.parseInt(this.args[this.args.length - 3]);
+			
+			if (this.args[this.args.length - 4].equals("true")) {
 				this.includeJava = true;
 			}
-			if (this.args[this.args.length - 2].equals("true")) {
-				for (int i = 1; i < this.args.length - 2; i++) {
+			if (this.args[this.args.length - 5].equals("true")) {
+				for (int i = 1; i < this.args.length - 5; i++) {
 					clssname.add(this.args[i]);
 				}
 			} else {
-				for (int i = 1; i < this.args.length - 2; i++) {
+				for (int i = 1; i < this.args.length - 5; i++) {
 					String arg = this.args[i];
 					for (@SuppressWarnings("rawtypes")
 					Class c : ClassFinder.getClasses(arg)) {
@@ -42,6 +52,18 @@ public class ParsingIdentifier {
 			}
 		}
 		return clssname;
+	}
+
+	public int getAdpcount() {
+		return adpcount;
+	}
+
+	public int getDccount() {
+		return dccount;
+	}
+
+	public int getCmcount() {
+		return cmcount;
 	}
 
 	public boolean isIncludeJava() {

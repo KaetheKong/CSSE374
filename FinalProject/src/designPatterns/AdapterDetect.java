@@ -33,6 +33,7 @@ public class AdapterDetect implements IDesignPattern {
 	private List<ClassClass> allinformation;
 	private Parser p;
 	private boolean includejava;
+	private int depth;
 
 	public AdapterDetect(ClassClass cc) {
 		this.defaultereturnType = "";
@@ -43,6 +44,7 @@ public class AdapterDetect implements IDesignPattern {
 		this.colorSetUp = "\t style=\"filled\"\n" + "\t fillcolor=\"#a5000\"\n";
 		this.p = new Parser(null);
 		this.includejava = false;
+		this.depth = 1;
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public class AdapterDetect implements IDesignPattern {
 				}
 			}
 
-			if (this.cc.getSuperclassname().startsWith("java") && !this.includejava) {
+			if (this.cc.getSuperclassname() == null || (this.cc.getSuperclassname().startsWith("java") && !this.includejava)) {
 				return false;
 			}
 
@@ -235,12 +237,13 @@ public class AdapterDetect implements IDesignPattern {
 								ClassClass supercc = new ClassClass(supermethods, allfields, cdv.getSuperName(),
 										cdv.getInterfaces(), cdv.getAccess(), cdv.getName(), cdv.isInterface(),
 										cdv.isAbstract(), this.cc.getDpd());
-
-								AdapteeClass aptcc = new AdapteeClass(supercc);
-								this.adapteeClasses.add(aptcc);
-								// this.cc.addAdaptee(className);
-								count++;
-								break;
+								if (!supercc.getClassname().startsWith("java") || this.includejava) {
+									AdapteeClass aptcc = new AdapteeClass(supercc);
+									this.adapteeClasses.add(aptcc);
+									// this.cc.addAdaptee(className);
+									count++;
+									break;
+								}
 							}
 						}
 						if (count <= prevcount) {
@@ -267,12 +270,12 @@ public class AdapterDetect implements IDesignPattern {
 	private List<ClassClass> getAncestorClasses(ClassClass clazzc, int count) {
 		List<ClassClass> ancestorClass = new ArrayList<ClassClass>();
 		if ((clazzc.getClassname().toLowerCase().startsWith("java")
-				&& clazzc.getClassname().toLowerCase().contains("object")) || count > 2) {
+				&& clazzc.getClassname().toLowerCase().contains("object")) || count > this.depth) {
 			return ancestorClass;
 		}
 
 		if ((clazzc.getSuperclassname().toLowerCase().startsWith("java")
-				&& clazzc.getSuperclassname().toLowerCase().contains("object")) || count > 2) {
+				&& clazzc.getSuperclassname().toLowerCase().contains("object")) || count > this.depth) {
 			return ancestorClass;
 		}
 
@@ -315,6 +318,10 @@ public class AdapterDetect implements IDesignPattern {
 			}
 		}
 		return ancestorClass;
+	}
+
+	public void setDepth(int depth) {
+		this.depth = depth;
 	}
 
 	private List<ClassVisitor> setVisitors(String name) {

@@ -27,6 +27,7 @@ public class InterfaceClass extends ClassClass implements IConnection{
 		if (this.cc.getInterfacesname().length < 1) return "";
 		for(String name : this.cc.getInterfacesname()){
 			if(!name.startsWith("java") || this.includeJava){
+				name = name.replace("$", "/");
 				String[] realname = name.split("/");
 				connect = connect + "    " + this.cc.getClassname() + "->" + realname[realname.length-1] + "\n";
 			}

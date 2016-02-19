@@ -11,6 +11,7 @@ import java.util.Map;
 import Data.ClassnameData;
 import Data.ConnectionData;
 import Data.DesignPatternData;
+import Utilities.Parser;
 import classes.ClassClass;
 import classes.FieldClass;
 import classes.MethodClass;
@@ -24,26 +25,32 @@ public class UMLGenerator {
 	private IData<IConnection> cnctd;
 	private IData<String> cd;
 	private String[] args;
-	public String FIRST_SEVERAL_LINES;
+	private Map<String, ClassClass> classes;
+	private Map<String, ClassClass> additionalclasses;
+	private String FIRST_SEVERAL_LINES;
+	private String UMLText;
+	private Parser p;
 
 	public UMLGenerator(String[] args) {
 		this.args = args;
 		this.cd = new ClassnameData(new ArrayList<>());
 		this.cnctd = new ConnectionData(new ArrayList<>());
-		this.dpd = new DesignPatternData();
+		this.dpd = new DesignPatternData(-1, -1, -1);
 		this.FIRST_SEVERAL_LINES = "    fontname = \"Bitstream Vera Sans\"\n" + "    rankdir = BT\n"
 				+ "    fontsize = 8\n" + "    node [\n" + "\t fontname = \"Bitstream Vera Sans\"\n"
 				+ "\t fontsize = 8\n" + "\t shape = \"record\"\n" + "    ]\n" + "    edge [\n"
 				+ "\t fontname = \"Bitstream Vera Sans\"\n" + "\t fontsize = 8\n" + "    ]\n";
+		this.p = new Parser(null);
+		this.classes = new HashMap<String, ClassClass>();
+		this.additionalclasses = new HashMap<String, ClassClass>();
+		this.UMLText = "digraph G {\n";
 	}
 
 	public void run() throws IOException, ClassNotFoundException {
-		Map<String, ClassClass> classes = new HashMap<String, ClassClass>();
+		
 		Map<String, Map<String, ArrayList<String>>> owner = new HashMap<String, Map<String, ArrayList<String>>>();
 		Map<String, Map<String, ArrayList<String>>> methodCall = new HashMap<String, Map<String, ArrayList<String>>>();
-		Map<String, ClassClass> additionalclasses = new HashMap<String, ClassClass>();
-
-		String UMLText = "digraph G {\n";
+		
 		String Classtext = "";
 
 		ParsingIdentifier pi = new ParsingIdentifier(args);
@@ -124,9 +131,10 @@ public class UMLGenerator {
 			ccs.add(classes.get(cc));
 		}
 		
+		this.dpd = new DesignPatternData(pi.getAdpcount(), pi.getDccount(), pi.getCmcount());
 		this.dpd.setAllClassData(ccs);
 		this.dpd.initialize(includeJava, null);
-		
+
 		for (String cc : classes.keySet()) {
 			classes.get(cc).setDpd(this.dpd);
 			String t = classes.get(cc).toUMLString();
@@ -138,10 +146,10 @@ public class UMLGenerator {
 					additionalclasses.put(pci.getClassname(), pci.getCc());
 				}
 			}
-			if (!Classtext.contains(t)) {
+			if (!t.equals("") && t != null && !Classtext.contains(t.substring(0, t.indexOf('[')))) {
 				Classtext = Classtext + t;
 			}
-			if (!Classtext.contains(comptxt)) {
+			if (!comptxt.equals("") && !Classtext.contains(comptxt)) {
 				Classtext = Classtext + comptxt + "\n";
 			}
 		}
@@ -154,8 +162,10 @@ public class UMLGenerator {
 		}
 		this.cnctd = new ConnectionData(Classnames);
 		for (ClassClass cc : classes.values()) {
-			cc.setDpd(this.dpd);
-			cnctd.initialize(includeJava, cc);
+			if (!this.checkcontains(cc, additionalclasses)) {
+				cc.setDpd(this.dpd);
+				cnctd.initialize(includeJava, cc);
+			}
 		}
 
 		for (ClassClass cc : additionalclasses.values()) {
@@ -167,9 +177,10 @@ public class UMLGenerator {
 			ComputeUMLConnection cuc = new ComputeUMLConnection(cd, cnctd);
 			cuc.findConnection();
 			UMLText = UMLText + FIRST_SEVERAL_LINES + Classtext + cuc.getConnection() + "} \n";
+			UMLText = UMLText.replaceAll("\\$", "");
 			System.out.println(UMLText);
 
-			String filename = "uml_code.txt";
+			String filename = "uml_code.gv";
 			BufferedWriter writer = null;
 			try {
 				writer = new BufferedWriter(new FileWriter(filename));
@@ -208,6 +219,10 @@ public class UMLGenerator {
 		}
 	}
 
+	public String getUMLText() {
+		return UMLText;
+	}
+
 	public void addDesignPattern(IDesignPattern idp) {
 		this.dpd.addData(idp);
 	}
@@ -230,5 +245,27 @@ public class UMLGenerator {
 
 	public void removeClassname(String cnm) {
 		this.cd.removeData(cnm);
+	}
+	
+	public Map<String, ClassClass> getClasses() {
+		return classes;
+	}
+
+	public Map<String, ClassClass> getAdditionalclasses() {
+		return additionalclasses;
+	}
+
+	private boolean checkcontains(ClassClass cc, Map<String, ClassClass> addClass) {
+		for (ClassClass clzz : addClass.values()) {
+			this.p.setToParse(clzz.getClassname());
+			String x1 = this.p.parse();
+			this.p.setToParse(cc.getClassname());
+			String x2 = this.p.parse();
+
+			if (x1.toLowerCase().equals(x2.toLowerCase())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

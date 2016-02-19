@@ -28,6 +28,7 @@ public class DecoratorDetect implements IDesignPattern {
 	private ClassClass component;
 	private boolean includejava;
 	private Parser p;
+	private int depth;
 
 	public DecoratorDetect(ClassClass cc) {
 		this.defaultFields = new ArrayList<String>();
@@ -37,6 +38,11 @@ public class DecoratorDetect implements IDesignPattern {
 		this.component = null;
 		this.p = new Parser(null);
 		this.includejava = false;
+		this.depth = 1;
+	}
+
+	public void setDepth(int depth) {
+		this.depth = depth;
 	}
 
 	@Override
@@ -60,13 +66,13 @@ public class DecoratorDetect implements IDesignPattern {
 
 		this.defaultFields.add(this.cc.getClassname());
 
-		if (this.cc.getClassname().startsWith("java") && this.cc.getClassname().contains("Object")) {
+		if ((this.cc.getClassname().startsWith("java") && !this.includejava) || this.cc.getClassname().contains("Object")) {
 			return false;
 		}
 
 		if (this.cc.getSuperclassname() != null) {
 
-			if (!this.cc.getSuperclassname().startsWith("java") && !this.cc.getSuperclassname().contains("Object")) {
+			if ((!this.cc.getSuperclassname().startsWith("java") || this.includejava) && !this.cc.getSuperclassname().contains("Object")) {
 				String spcn = this.cc.getSuperclassname();
 				String[] real = spcn.split("/");
 				String str = spcn;
@@ -140,8 +146,8 @@ public class DecoratorDetect implements IDesignPattern {
 		String supercc = this.cc.getSuperclassname();
 		boolean result = true;
 
-		if (supercc.toLowerCase().startsWith("java") && supercc.toLowerCase().contains("object")) {
-			return true;
+		if ((supercc.toLowerCase().startsWith("java") && !this.includejava) || supercc.toLowerCase().contains("object")) {
+			return false;
 		}
 
 		List<String> allPossibleSupers = new ArrayList<String>();
@@ -373,12 +379,12 @@ public class DecoratorDetect implements IDesignPattern {
 	private List<ClassClass> getAncestorClasses(ClassClass clazzc, int count) {
 		List<ClassClass> ancestorClass = new ArrayList<ClassClass>();
 		if ((clazzc.getClassname().toLowerCase().startsWith("java")
-				&& clazzc.getClassname().toLowerCase().contains("object")) || count > 2) {
+				&& clazzc.getClassname().toLowerCase().contains("object")) || count > depth) {
 			return ancestorClass;
 		}
 
 		if ((clazzc.getSuperclassname().toLowerCase().startsWith("java")
-				&& clazzc.getSuperclassname().toLowerCase().contains("object")) || count > 2) {
+				&& clazzc.getSuperclassname().toLowerCase().contains("object")) || count > depth) {
 			return ancestorClass;
 		}
 

@@ -30,7 +30,7 @@ public class TestDecoratorAdapter {
 
 	@Test
 	public void testDecryptionInputStream() throws IOException {
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(2, 2, 0);
 		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("testfile2.DecryptionInputStream");
@@ -69,7 +69,7 @@ public class TestDecoratorAdapter {
 	
 	@Test
 	public void testIteratorToEnumerationAdapter() throws IOException {
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(2, 2, 0);
 		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("problem.client.IteratorToEnumerationAdapter");
@@ -108,7 +108,7 @@ public class TestDecoratorAdapter {
 	
 	@Test
 	public void testInputStreamReader() throws IOException {
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(2, 2, 0);
 		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.io.InputStreamReader");
@@ -147,7 +147,7 @@ public class TestDecoratorAdapter {
 	
 	@Test
 	public void testOuputStreamWriter() throws IOException {
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(2, 2, 0);
 		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.io.OutputStreamWriter");
@@ -186,7 +186,7 @@ public class TestDecoratorAdapter {
 	
 	@Test
 	public void testMouseAdapter() throws IOException {
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(2, 2, 0);
 		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.awt.event.MouseAdapter");
@@ -219,6 +219,45 @@ public class TestDecoratorAdapter {
 		boolean isdecorator = ddd.detectPattern(allms, fs);
 		boolean isAdapter = add.detectPattern(allms, fs);
 		assertFalse(issingle);
+		assertFalse(isdecorator);
+		assertFalse(isAdapter);
+	}
+	
+	@Test
+	public void testBufferedReader() throws IOException {
+		IData<IDesignPattern> dpd = new DesignPatternData(2, 2, 0);
+		dpd.initialize(true, null);
+		
+		ClassReader cr = new ClassReader("java.io.BufferedReader");
+		ClassVisitor visitor = new ClassDecorationVisitor(Opcodes.ASM5);
+		ClassVisitor fieldVisitor = new ClassFieldVisitor(Opcodes.ASM5, visitor);
+		ClassMethodVisitor cmv = new ClassMethodVisitor(Opcodes.ASM5, fieldVisitor);
+		cr.accept(cmv, ClassReader.EXPAND_FRAMES);
+		List<MethodClass> allms = ((ClassMethodVisitor) cmv).getAllMethodsInfo();
+		Map<String, FieldClass> fields = ((ClassFieldVisitor) fieldVisitor).getFieldInfoCollection();
+
+		List<FieldClass> fs = new ArrayList<FieldClass>();
+		for (String f : fields.keySet()) {
+			fs.add(fields.get(f));
+		}
+		
+		ClassClass newCC = new ClassClass(allms, fs, ((ClassDecorationVisitor) visitor).getSuperName(),
+				((ClassDecorationVisitor) visitor).getInterfaces(),
+				((ClassDecorationVisitor) visitor).getAccess(), ((ClassDecorationVisitor) visitor).getName(),
+				((ClassDecorationVisitor) visitor).isInterface(),
+				((ClassDecorationVisitor) visitor).isAbstract(), dpd);
+		
+		SingletonDetect sdd = new SingletonDetect(newCC);
+		DecoratorDetect ddd = new DecoratorDetect(newCC);
+		AdapterDetect add = new AdapterDetect(newCC);
+		sdd.setIncludejava(true);
+		ddd.setIncludejava(true);
+		add.setIncludejava(true);
+		
+//		boolean issingle = sdd.detectPattern(allms, fs);
+		boolean isdecorator = ddd.detectPattern(allms, fs);
+		boolean isAdapter = add.detectPattern(allms, fs);
+//		assertFalse(issingle);
 		assertFalse(isdecorator);
 		assertFalse(isAdapter);
 	}

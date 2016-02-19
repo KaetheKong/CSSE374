@@ -27,10 +27,41 @@ public class TestComposite {
 
 	@Test
 	public void testContainer() throws IOException {
-		IData<IDesignPattern> dpd = new DesignPatternData();
+		IData<IDesignPattern> dpd = new DesignPatternData(0, 0, 3);
 		dpd.initialize(true, null);
 		
 		ClassReader cr = new ClassReader("java.awt.Container");
+		ClassVisitor visitor = new ClassDecorationVisitor(Opcodes.ASM5);
+		ClassVisitor fieldVisitor = new ClassFieldVisitor(Opcodes.ASM5, visitor);
+		ClassMethodVisitor cmv = new ClassMethodVisitor(Opcodes.ASM5, fieldVisitor);
+		cr.accept(cmv, ClassReader.EXPAND_FRAMES);
+		List<MethodClass> allms = ((ClassMethodVisitor) cmv).getAllMethodsInfo();
+		Map<String, FieldClass> fields = ((ClassFieldVisitor) fieldVisitor).getFieldInfoCollection();
+
+		List<FieldClass> fs = new ArrayList<FieldClass>();
+		for (String f : fields.keySet()) {
+			fs.add(fields.get(f));
+		}
+		
+		ClassClass newCC = new ClassClass(allms, fs, ((ClassDecorationVisitor) visitor).getSuperName(),
+				((ClassDecorationVisitor) visitor).getInterfaces(),
+				((ClassDecorationVisitor) visitor).getAccess(), ((ClassDecorationVisitor) visitor).getName(),
+				((ClassDecorationVisitor) visitor).isInterface(),
+				((ClassDecorationVisitor) visitor).isAbstract(), dpd);
+		
+		CompositeDetect cdd = new CompositeDetect(newCC, new ArrayList<ClassClass>());
+		cdd.setIncludejava(true);
+		
+		boolean iscomposite = cdd.detectPattern(allms, fs);
+		assertTrue(iscomposite);
+	}
+	
+	@Test
+	public void testWeek7() throws IOException {
+		IData<IDesignPattern> dpd = new DesignPatternData(0, 0, 3);
+		dpd.initialize(true, null);
+		
+		ClassReader cr = new ClassReader("week7lab.sprites.AbstractSprite");
 		ClassVisitor visitor = new ClassDecorationVisitor(Opcodes.ASM5);
 		ClassVisitor fieldVisitor = new ClassFieldVisitor(Opcodes.ASM5, visitor);
 		ClassMethodVisitor cmv = new ClassMethodVisitor(Opcodes.ASM5, fieldVisitor);

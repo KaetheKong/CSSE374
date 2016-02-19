@@ -20,7 +20,7 @@ public class LeafClass extends ClassClass{
 		int index = str.indexOf("|");
 		int index2 = str.indexOf("}\"") + 2;
 		
-		if (this.cc.getPatternDetector().get(this.name)) {
+		if (this.cc.getPatternDetector().get(this.name) != null && this.cc.getPatternDetector().get(this.name)) {
 			newString = str;
 			for (ClassClass c : this.cc.getAllPatternClassClassInfo()) {
 				newString = newString + c.toUMLString();

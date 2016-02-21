@@ -75,4 +75,9 @@ public class AssociationClass extends ClassClass implements IConnection {
 		this.incldJava = x;
 	}
 
+	@Override
+	public void setCc(ClassClass cc) {
+		this.cc = cc;
+	}
+
 }

@@ -16,6 +16,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
+import interfaces.IDesignPattern;
 import toUMLimplement.UMLGenerator;
 
 public class AnalyzeWindow extends JPanel implements ActionListener, PropertyChangeListener {
@@ -30,6 +31,7 @@ public class AnalyzeWindow extends JPanel implements ActionListener, PropertyCha
 	private DotLauncher dl;
 	private OutFrame op;
 	private JTextArea taskOutput;
+	private UMLGenerator umlgenerator;
 	private Task task;
 	private int error = 0;
 
@@ -42,6 +44,8 @@ public class AnalyzeWindow extends JPanel implements ActionListener, PropertyCha
 	private static final String MAP_FIELD_7 = "Decorator-MethodDelegation";
 	private static final String MAP_FIELD_8 = "Composite-MethodDelegation";
 	// private static final String MAP_FIELD_8 = "Singleton-RequireGetInstance";
+	private static final String MAP_FIELD_9 = "include-java";
+	private static final String MAP_FIELD_10 = "use-classes";
 
 	public AnalyzeWindow(LoadWindow lw, UserInterfaceLoader uifl) {
 		this.lw = lw;
@@ -64,6 +68,8 @@ public class AnalyzeWindow extends JPanel implements ActionListener, PropertyCha
 		taskOutput.setMargin(new Insets(5, 5, 5, 5));
 		taskOutput.setEditable(false);
 		this.add(taskOutput);
+		
+		this.umlgenerator = new UMLGenerator(null);
 	}
 
 	@Override
@@ -109,8 +115,10 @@ public class AnalyzeWindow extends JPanel implements ActionListener, PropertyCha
 					String classesToDrawUml = fileInfo.get(MAP_FIELD_1.toLowerCase());
 					classesToDrawUml = classesToDrawUml.replace(",", " ");
 					args += classesToDrawUml + " ";
-					args += "true ";
-					args += "true ";
+					if (fileInfo.get(MAP_FIELD_10.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_10.toLowerCase()) + " ";
+					else args += "true ";
+					if (fileInfo.get(MAP_FIELD_10.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_9.toLowerCase()) + " ";
+					else args += "true ";
 					if (fileInfo.get(MAP_FIELD_6.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_6.toLowerCase()) + " ";
 					else args += "-1";
 					if (fileInfo.get(MAP_FIELD_7.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_7.toLowerCase()) + " ";
@@ -126,8 +134,8 @@ public class AnalyzeWindow extends JPanel implements ActionListener, PropertyCha
 					progress += 10;
 					pb.setValue(progress);
 					taskOutput.append("Finished parsing the arguments\n");
-
-					UMLGenerator ugor = new UMLGenerator(args.split("\\s"));
+					
+					umlgenerator.setArgs(args.split("\\s"));
 					
 					try {
 						Thread.sleep(1000);
@@ -139,7 +147,7 @@ public class AnalyzeWindow extends JPanel implements ActionListener, PropertyCha
 					taskOutput.append("Finished initializing the uml generator\n");
 					
 					try {
-						ugor.run();
+						umlgenerator.run();
 
 						try {
 							Thread.sleep(1000);
@@ -151,7 +159,7 @@ public class AnalyzeWindow extends JPanel implements ActionListener, PropertyCha
 						taskOutput.append("Finished examine the classes and running the uml\n");
 
 						String dotpath = fileInfo.get(MAP_FIELD_4.toLowerCase());
-						op.setUgor(ugor);
+						op.setUgor(umlgenerator);
 						
 						try {
 							Thread.sleep(1000);
@@ -206,6 +214,10 @@ public class AnalyzeWindow extends JPanel implements ActionListener, PropertyCha
 			taskOutput.append(String.format("Completed %d%% of task.\n", progress));
 		}
 
+	}
+
+	public void addDesignPatternData(IDesignPattern idp) {
+		this.umlgenerator.addDesignPattern(idp);		
 	}
 
 }

@@ -11,14 +11,14 @@ import designPatterns.SingletonDetect;
 import interfaces.IData;
 import interfaces.IDesignPattern;
 
-public class DesignPatternData implements IData<IDesignPattern>{
-	
+public class DesignPatternData implements IData<IDesignPattern> {
+
 	private List<IDesignPattern> allDesignPatterns;
 	private List<ClassClass> allClasses;
 	private int adpdpt;
 	private int decordpt;
 	private int compdpt;
-	
+
 	public DesignPatternData(int adapterDpt, int decorDpt, int compDpt) {
 		this.allDesignPatterns = new ArrayList<IDesignPattern>();
 		this.allClasses = new ArrayList<ClassClass>();
@@ -34,13 +34,20 @@ public class DesignPatternData implements IData<IDesignPattern>{
 
 	@Override
 	public void addData(IDesignPattern data) {
-		this.allDesignPatterns.add(data);
-		
+		boolean contain = false;
+		for (int i = 0; i < this.allDesignPatterns.size(); i++) {
+			if (this.allDesignPatterns.get(i).getName().equals(data.getName())) {
+				contain |= true;
+			}
+		}
+		if (!contain) {
+			this.allDesignPatterns.add(data);
+		}
 	}
 
 	@Override
 	public void removeData(IDesignPattern data) {
-		this.allDesignPatterns.remove(data);		
+		this.allDesignPatterns.remove(data);
 	}
 
 	@Override
@@ -49,21 +56,23 @@ public class DesignPatternData implements IData<IDesignPattern>{
 		IDesignPattern dd = new DecoratorDetect(null);
 		IDesignPattern ad = new AdapterDetect(null);
 		IDesignPattern compd = new CompositeDetect(null, this.allClasses);
-		
+
 		sd.setIncludejava(includeJava);
 		dd.setIncludejava(includeJava);
 		ad.setIncludejava(includeJava);
 		compd.setIncludejava(includeJava);
-		
-		if (this.adpdpt > 0) ad.setDepth(this.adpdpt);
-		if (this.decordpt > 0) dd.setDepth(this.decordpt);
-		if (this.compdpt > 0) compd.setDepth(this.compdpt);
-		
+
+		if (this.adpdpt > 0)
+			ad.setDepth(this.adpdpt);
+		if (this.decordpt > 0)
+			dd.setDepth(this.decordpt);
+		if (this.compdpt > 0)
+			compd.setDepth(this.compdpt);
+
 		this.allDesignPatterns.add(sd);
 		this.allDesignPatterns.add(dd);
 		this.allDesignPatterns.add(ad);
 		this.allDesignPatterns.add(compd);
-		
 	}
 
 	@Override

@@ -31,6 +31,10 @@ public class UMLGenerator {
 	private String UMLText;
 	private Parser p;
 
+	public void setArgs(String[] args) {
+		this.args = args;
+	}
+
 	public UMLGenerator(String[] args) {
 		this.args = args;
 		this.cd = new ClassnameData(new ArrayList<>());
@@ -131,7 +135,14 @@ public class UMLGenerator {
 			ccs.add(classes.get(cc));
 		}
 		
+		List<IDesignPattern> dp = this.dpd.getData();
+		
 		this.dpd = new DesignPatternData(pi.getAdpcount(), pi.getDccount(), pi.getCmcount());
+		if (!dp.isEmpty()) {
+			for (int i = 0; i < dp.size(); i++) {
+				this.dpd.addData(dp.get(i));
+			}
+		}
 		this.dpd.setAllClassData(ccs);
 		this.dpd.initialize(includeJava, null);
 
@@ -160,6 +171,7 @@ public class UMLGenerator {
 		for (String cn : Classnames) {
 			this.cd.addData(cn);
 		}
+		
 		this.cnctd = new ConnectionData(Classnames);
 		for (ClassClass cc : classes.values()) {
 			if (!this.checkcontains(cc, additionalclasses)) {
@@ -217,6 +229,10 @@ public class UMLGenerator {
 				}
 			}
 		}
+	}
+
+	public IData<IDesignPattern> getDpd() {
+		return dpd;
 	}
 
 	public String getUMLText() {

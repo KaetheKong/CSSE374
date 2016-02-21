@@ -15,7 +15,7 @@ public class SingletonClass extends ClassClass implements IConnection {
 		super(cc.getMethods(), cc.getFields(), cc.getSuperclassname(), cc.getInterfacesname(), cc.getAccess(),
 				cc.getClassname(), cc.isInterface(), cc.isAbstract(), cc.getDpd());
 		this.cc = cc;
-		this.edge = "    edge [\n\t style = \"solid\"\n    ]\n";
+		this.edge = "    edge [\n\t style = \"solid\"\n\t label = \"\"\n    ]\n";
 		this.type = "Singleton";
 		this.includeJava = false;
 	}
@@ -47,6 +47,11 @@ public class SingletonClass extends ClassClass implements IConnection {
 	@Override
 	public void setIncludeJava(boolean x) {
 		this.includeJava = x;
+	}
+
+	@Override
+	public void setCc(ClassClass cc) {
+		this.cc = cc;
 	}
 
 }

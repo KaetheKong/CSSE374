@@ -56,4 +56,9 @@ public class CompositeClass extends ClassClass implements IConnection {
 	public void setIncludeJava(boolean x) {
 		this.includeJava = x;
 	}
+
+	@Override
+	public void setCc(ClassClass cc) {
+		this.cc = cc;
+	}
 }

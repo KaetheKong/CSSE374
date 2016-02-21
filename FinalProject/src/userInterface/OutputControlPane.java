@@ -16,6 +16,8 @@ import javax.swing.border.LineBorder;
 
 import Data.DesignPatternGenInfoData;
 import classes.ClassClass;
+import interfaces.IData;
+import interfaces.IDesignPattern;
 import toUMLimplement.UMLGenerator;
 
 public class OutputControlPane extends JPanel implements ActionListener {
@@ -24,7 +26,15 @@ public class OutputControlPane extends JPanel implements ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -2526169158117758457L;
-
+	
+	private static final String MAP_FIELD_3 = "Output-Directory";
+	private static final String MAP_FIELD_4 = "Dot-Path";
+	private static final String MAP_FIELD_6 = "Adapter-MethodDelegation";
+	private static final String MAP_FIELD_7 = "Decorator-MethodDelegation";
+	private static final String MAP_FIELD_8 = "Composite-MethodDelegation";
+	private static final String MAP_FIELD_9 = "include-java";
+	private static final String MAP_FIELD_10 = "use-classes";
+	
 	private UMLGenerator ugo;
 	private Map<JCheckBox, List<JCheckBox>> mappingButtons;
 	private Map<JCheckBox, List<ClassClass>> clzz;
@@ -81,11 +91,8 @@ public class OutputControlPane extends JPanel implements ActionListener {
 					this.add(rb1);
 					rb1.setLocation(x, y);
 					y += 20;
-
-					char temp1 = s1.charAt(0);
-					char temp = Character.toUpperCase(temp1);
-					String fin = temp + s1.substring(1);
-					int count = this.setSubButtons(fin, rb1.getLocation().x, rb1.getLocation().y);
+					
+					int count = this.setSubButtons(s.split("-")[0], rb1.getLocation().x, rb1.getLocation().y);
 					y += 20 * count;
 					break;
 				}
@@ -198,17 +205,28 @@ public class OutputControlPane extends JPanel implements ActionListener {
 			}
 		}
 
-		args += "true ";
-		args += "true ";
-		args += fileInfo.get("Adapter-MethodDelegation".toLowerCase()) + " ";
-		args += fileInfo.get("Decorator-MethodDelegation".toLowerCase()) + " ";
-		args += "-1";
+		if (fileInfo.get(MAP_FIELD_10.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_10.toLowerCase()) + " ";
+		else args += "true ";
+		if (fileInfo.get(MAP_FIELD_10.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_9.toLowerCase()) + " ";
+		else args += "true ";
+		if (fileInfo.get(MAP_FIELD_6.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_6.toLowerCase()) + " ";
+		else args += "-1";
+		if (fileInfo.get(MAP_FIELD_7.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_7.toLowerCase()) + " ";
+		else args += "-1";
+		if (fileInfo.get(MAP_FIELD_8.toLowerCase()) != null) args += fileInfo.get(MAP_FIELD_8.toLowerCase()) + " ";
+		else args += "-1";
 
 		UMLGenerator ugor = new UMLGenerator(args.split("\\s"));
+		IData<IDesignPattern> dpds = this.ugo.getDpd();
+		List<IDesignPattern> alldata = dpds.getData();
+		for (int i = 0; i < alldata.size(); i++) {
+			ugor.addDesignPattern(alldata.get(i));
+		}
+		
 		try {
 			ugor.run();
-			String dotpath = fileInfo.get("dot-path");
-			this.dl.setOutpath(fileInfo.get("output-directory"));
+			String dotpath = fileInfo.get(MAP_FIELD_4.toLowerCase());
+			this.dl.setOutpath(fileInfo.get(MAP_FIELD_3.toLowerCase()));
 			this.dl.setPath(dotpath);
 			this.dl.launch(false);
 		} catch (ClassNotFoundException | IOException e1) {

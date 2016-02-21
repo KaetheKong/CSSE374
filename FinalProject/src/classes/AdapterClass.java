@@ -57,4 +57,9 @@ public class AdapterClass extends ClassClass implements IConnection {
 		this.includeJava = x;
 	}
 
+	@Override
+	public void setCc(ClassClass cc) {
+		this.cc = cc;		
+	}
+
 }

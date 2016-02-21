@@ -7,15 +7,20 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
 import Data.DesignPatternGenInfoData;
+import interfaces.IDesignPattern;
 
 public class UserInterfaceLoader {
 	private DesignPatternGenInfoData dpfid;
 	private JFrame frame;
+	private AnalyzeWindow apanel;
+	private LoadWindow panel;
 
 	public UserInterfaceLoader() {
 		this.dpfid = new DesignPatternGenInfoData();
 		this.init();
 		this.frame = new JFrame("Design Parser");
+		this.panel = new LoadWindow();
+		this.apanel = new AnalyzeWindow(this.panel, this);
 	}
 
 	public void init() {
@@ -23,15 +28,13 @@ public class UserInterfaceLoader {
 	}
 
 	public void launcher() {
-		LoadWindow panel = new LoadWindow();
-		AnalyzeWindow apanel = new AnalyzeWindow(panel, this);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(500, 400);
 
 		frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-		frame.getContentPane().add(panel);
-		frame.getContentPane().add(apanel);
+		frame.getContentPane().add(this.panel);
+		frame.getContentPane().add(this.apanel);
 		frame.setVisible(true);
 	}
 
@@ -55,5 +58,9 @@ public class UserInterfaceLoader {
 		this.frame.dispose();
 		this.frame = new JFrame("Design Parser");
 		this.launcher();
+	}
+	
+	public void addDesignPatternData(IDesignPattern idp) {
+		this.apanel.addDesignPatternData(idp);
 	}
 }

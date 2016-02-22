@@ -210,10 +210,7 @@ public class OutputControlPane extends JPanel implements ActionListener {
 			}
 		}
 
-		if (fileInfo.get(MAP_FIELD_10.toLowerCase()) != null)
-			args += fileInfo.get(MAP_FIELD_10.toLowerCase()) + " ";
-		else
-			args += "true ";
+		args += "true ";
 		if (fileInfo.get(MAP_FIELD_10.toLowerCase()) != null)
 			args += fileInfo.get(MAP_FIELD_9.toLowerCase()) + " ";
 		else

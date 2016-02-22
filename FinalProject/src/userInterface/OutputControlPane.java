@@ -150,7 +150,7 @@ public class OutputControlPane extends JPanel implements ActionListener {
 				}
 				umltext = umltext.substring(umltext.indexOf("\"{"), umltext.indexOf("|"));
 				for (String z : dpmapping) {
-					if (umltext.toLowerCase().contains(z.toLowerCase())) {
+					if (umltext.toLowerCase().contains("\\<\\<" + z.toLowerCase() + "\\>\\>")) {
 						lly += 20;
 						JCheckBox rb = new JCheckBox(classes.get(name).getClassname());
 						rb.setLocation(llx, lly);

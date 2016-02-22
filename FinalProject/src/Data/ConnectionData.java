@@ -43,11 +43,11 @@ public class ConnectionData implements IData<IConnection>{
 
 	@Override
 	public void initialize(boolean includeJava, ClassClass cc) {
-		if (!this.connections.isEmpty()) {
-			for (IConnection ic : this.connections) {
-				ic.setCc(cc);
-			}
-		}
+//		if (!this.connections.isEmpty()) {
+//			for (IConnection ic : this.connections) {
+//				ic.setCc(cc);
+//			}
+//		}
 		IConnection interfaceclss = new InterfaceClass(cc);
 		IConnection absClass = new AbstractClass(cc);
 		IConnection usesClass = new UsesClass(cc, this.classnames);

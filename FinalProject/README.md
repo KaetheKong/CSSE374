@@ -1,9 +1,13 @@
 # CSSE374
 This is the final project for the junior design class CSSE374. 
+
+
 Markdown | Less | Pretty
 --- | --- | ---
 *Still* | `renders` | **nicely**
 1 | 2 | 3
+
+
 For Milestone #1: 
 
 Design:

@@ -1,14 +1,6 @@
 # CSSE374
 This is the final project for the junior design class CSSE374. 
 
-
-Packages | Classes | description
---- | --- | ---
-asm | ClassDecorationVisitor|  
-asm | ClassFieldVisitor|
-asm | ClassMethodVisitor |
-
-
 For Milestone #1: 
 
 Design:

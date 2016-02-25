@@ -38,10 +38,38 @@ Works:
 	We both worked on the manual generation of UML and Sequence diagram.
 	
 
-For Mileston #5:
+For Milestone #5:
+
 Design: 
 	we added AdapterDetect, AdapterClass, DecoratorDetect and DecoratorClass for adapter pattern and decorator pattern.
 	
+Works:
+	Kong implemented the DecoratorDetect class, which detect the decorator design pattern.
+	Wen implemented the AdapterDetect class, which detect the adapter design pattern.
+	We both worked on the manual generation of UML Diagram. We both worked on extending more classes for the UML string generating process such that each match up with their color and style.
+	
+
+For Milestone #6:
+
+Design:
+	we added CompositeDetect, CompositeClass, CompositeComponentClass, LeafClass to detect the Composite design pattern.
+	
+Works:
+	We both worked on the detection class of the composite design pattern.
+	Kong implemented majority of the logic of the detection.
+	Wen implemented the tracing down levels of the subclasses for the detection.
+	We both worked on the classes for the connections and generation of the UML textual code.
+	
+For Milestone #7:
+
+Design:
+	We changed the design a little bit more by pulling out some necessary data out from the system's code so that users can extend our code easily by calling the add methods for adding an extra piece of the data to the system. To implement the user interfaces, we implemented the interfaces into different phases, including loading phase, analyzing phase, and output phase. Then the output phase contain different parts containing the control (checkbox) part and picture part. A total number of classes were added for the interfaces.
+	
+Works:
+	We both worked on the user interfaces.
+	Wen worked on the basic structure of the UI and the calls of appropriate detection when necessary. And she also helped fix the small changes inside of the UML generator code such that the generator works better with the user interfaces.
+	Kong worked on making the design of the user interfaces better so that each different phase were separated. Also, she worked on fixing the bug to enable better extensions. 
+	We both worked on the manual generation of the UML diagram.
 
 How to use our code?
 	The main function was implemented in ToUML in the toUMLimplement package. Pass in a command follows a format as following as the argument of the ToUML class. 

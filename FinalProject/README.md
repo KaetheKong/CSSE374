@@ -73,7 +73,7 @@ Works:
 
 How to use our code?
 
-	The main function was implemented in ToUML in the toUMLimplement package. Pass in a command follows a format as following as the argument of the ToUML class. 
+The main function was implemented in ToUML in the toUMLimplement package. Pass in a command follows a format as following as the argument of the ToUML class. 
 	
 	seq <classname> <methodname> <parameters (separate by commas)> <boolean value to include java classes or not>
 	

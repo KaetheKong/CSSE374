@@ -78,6 +78,25 @@ How to use our code?
 	
 	uml <package name (separate by commas)> <boolean value to show if the argment passed in is a classname>
 	
+How to use our UI?
+	1. Create a config file similar to the config.txt file uploaded in the package
+	2. Run the class UserInterface.java
+	3. Click on load and find the file to load as config.txt
+	4. And click on analyze, then it should generate what is contained inside the given classes/packages.
+	..* | Config Fields                | Description   |
+	    | ---------------------------- |:-------------:|
+	    | Input-Folder                 | right-aligned |
+	    | Input-Classes                | centered      |
+	    | Output-Directory             | are neat      |
+	    | Dot-Path                     |               |
+	    | Phases	                   | 	           |
+	    | Adapter-MethodDelegation     |               |
+	    | Decorator-MethodDelegation   |               |
+	    | Singleton-RequireGetInstance |               |
+	    | Composite-MethodDelegation   |               |
+	    | include-java                 |               |
+	    | use-classes                  |               |
+	
 Example command passing in as argument:
 	
 	uml asm classes Data designPatterns implementation interfaces toUMLimplement false
